@@ -73,7 +73,6 @@ MultiContactPicker will inherit it's theme from the base project, however you ca
     <item name="colorAccent">@color/accent</item>
     <item name="android:textColorPrimary">@color/primary_text</item>
     <item name="android:textColorSecondary">@color/secondary_text</item>
-    <item name="windowActionModeOverlay">true</item>
 </style>
 ```
 
