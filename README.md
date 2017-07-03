@@ -10,7 +10,7 @@ A simple, material design multi-contact picker using RecyclerView and Alphabetic
 
 Screenshot
 :-------------------------
-![](http://i.imgur.com/izTebEk.png)
+![](http://i.imgur.com/6duvoHm.png)
 
 
 ##Install
