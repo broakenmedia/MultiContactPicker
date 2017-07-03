@@ -36,12 +36,12 @@ dependencies {
 Open the picker in your activity/fragment:
 
 ```java
-new MultiContactPicker.Builder(MainActivity.this) //Activity/fragment context
+new MultiContactPicker.Builder(this) //Activity/fragment context
     .theme(R.style.MyCustomPickerTheme) //Optional - default: Inherits project style
     .hideScrollbar(false) //Optional - default: false
     .showTrack(true) //Optional - default: true
-    .handleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Green
-    .bubbleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Green
+    .handleColor(ContextCompat.getColor(this, R.color.colorPrimary)) //Optional - default: Green
+    .bubbleColor(ContextCompat.getColor(this, R.color.colorPrimary)) //Optional - default: Green
     .textColor(Color.WHITE) //Optional - default: White
     .showPickerForResult(CONTACT_PICKER_REQUEST);
 ```
