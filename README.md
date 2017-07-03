@@ -87,6 +87,8 @@ MultiContactPicker utilises code from these great libraries:
 
 [RxContacts2](https://github.com/mirrajabi/rx-contacts2)
 
+[RxAndroid](https://github.com/ReactiveX/RxAndroid)
+
 
 ## License
 
