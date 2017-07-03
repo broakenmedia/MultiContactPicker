@@ -3,7 +3,7 @@
 [![](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 <a target="_blank" href="https://developer.android.com/reference/android/os/Build.VERSION_CODES.html#JELLY_BEAN"><img src="https://img.shields.io/badge/API-16%2B-blue.svg?style=flat" alt="API" /></a> 
 
-A simple, material design multi-contact picker! The picker will read the device contacts (**REMEMBER**: Runtime permissions for retreiving contacts) and allow you to select 1-many and return them in a convenient list. Great for apps that wish to allow users to import from their contacts and/or invite their friends all at once.
+A simple, material design multi-contact picker using RecyclerView and Alphabetical Fast Scrolling! The picker will read the device contacts (**REMEMBER**: Runtime permissions for retrieving contacts) and allow you to select 1-many and return them in a convenient list. Great for apps that wish to allow users to import from their contacts and/or invite their friends all at once.
 
 **Note:** The contacts will always have the first letter gmail-style avatars, contact photos are not used at this time.
 
