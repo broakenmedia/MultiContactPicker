@@ -28,7 +28,7 @@ Add this to your module build.gradle
 
 ``` gradle
 dependencies {
-    compile 'com.github.xbroak:MultiContactPicker:v1.0'
+    compile 'com.github.xbroak:MultiContactPicker:1.0'
 }
 ```
 ### Usage
