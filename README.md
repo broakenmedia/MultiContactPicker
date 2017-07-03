@@ -67,7 +67,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 MultiContactPicker will inherit it's theme from the base project, however you can use a custom theme if you wish:
 
 ```xml
-<style name="MyCustomTheme" parent="Theme.AppCompat.Light.NoActionBar">
+<style name="MyCustomTheme" parent="Theme.AppCompat.Light.DarkActionBar">
     <item name="colorPrimary">@color/primary</item>
     <item name="colorPrimaryDark">@color/primary_dark</item>
     <item name="colorAccent">@color/accent</item>
