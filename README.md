@@ -78,6 +78,15 @@ MultiContactPicker will inherit it's theme from the base project, however you ca
 
 This can then be set in the builder above using **.theme(int)**
 
+### Thanks
+MultiContactPicker tilises code from these great libraries:
+
+[FastScroll](https://github.com/L4Digital/FastScroll)
+
+[RoundedLetterView](https://github.com/pavlospt/RoundedLetterView)
+
+[RxContacts2](https://github.com/mirrajabi/rx-contacts2)
+
 
 ## License
 
