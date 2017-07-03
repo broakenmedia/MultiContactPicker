@@ -36,7 +36,7 @@ dependencies {
 Open the picker in your activity/fragment:
 
 ```java
-new MultiContactPicker.Builder(MainActivity.this) //Activity context
+new MultiContactPicker.Builder(MainActivity.this) //Activity/fragment context
     .theme(R.style.MyCustomPickerTheme) //Optional - default: Inherits project style
     .hideScrollbar(false) //Optional - default: false
     .showTrack(true) //Optional - default: true
