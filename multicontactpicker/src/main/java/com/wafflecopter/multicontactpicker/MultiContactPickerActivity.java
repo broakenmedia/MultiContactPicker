@@ -120,10 +120,10 @@ public class MultiContactPickerActivity extends AppCompatActivity {
                     @Override
                     public void onSubscribe(Disposable d) {}
                     @Override
-                    public void onSuccess(List<Contact> value) {
+                    public void onSuccess(List<Contact> contacts) {
                         contactList.clear();
-                        contactList.addAll(value);
-                        if(adapter != null){
+                        contactList.addAll(contacts);
+                        if(adapter != null && contacts.size() > 0){
                             adapter.notifyDataSetChanged();
                         }
                     }

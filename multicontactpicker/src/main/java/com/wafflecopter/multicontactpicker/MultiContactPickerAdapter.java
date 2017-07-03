@@ -87,7 +87,12 @@ public class MultiContactPickerAdapter extends RecyclerView.Adapter<MultiContact
 
     @Override
     public String getSectionText(int position) {
-        return String.valueOf(contactItemList.get(position).getDisplayName().charAt(0));
+        try {
+            return String.valueOf(contactItemList.get(position).getDisplayName().charAt(0));
+        } catch (NullPointerException | IndexOutOfBoundsException ex){
+            ex.printStackTrace();
+            return "";
+        }
     }
 
     class ContactViewHolder extends RecyclerView.ViewHolder {
