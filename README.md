@@ -13,7 +13,7 @@ Screenshot
 ![](http://i.imgur.com/6duvoHm.png)
 
 
-##Install
+## Install
 
 Add this to your project build.gradle
 ``` gradle
@@ -31,7 +31,7 @@ dependencies {
     compile 'com.github.xbroak:MultiContactPicker:v1.0'
 }
 ```
-###Usage
+### Usage
 
 Open the picker in your activity/fragment:
 
