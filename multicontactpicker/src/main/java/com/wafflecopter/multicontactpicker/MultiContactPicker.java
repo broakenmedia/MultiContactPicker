@@ -87,13 +87,13 @@ public class MultiContactPicker {
     static ArrayList<ContactResult> buildResult(List<Contact> selectedContacts){
         ArrayList<ContactResult> contactResults = new ArrayList<>();
         for(Contact contact : selectedContacts){
-            contactResults.add(new ContactResult().setupFromContact(contact));
+            contactResults.add(new ContactResult(contact));
         }
         return contactResults;
     }
 
     @SuppressWarnings("unchecked")
     public static ArrayList<ContactResult> obtainResult(Intent data){
-        return (ArrayList<ContactResult>)data.getSerializableExtra(MultiContactPickerActivity.EXTRA_RESULT_SELECTION);
+        return data.getParcelableArrayListExtra(MultiContactPickerActivity.EXTRA_RESULT_SELECTION);
     }
 }

@@ -66,7 +66,6 @@ public class RxContacts {
         int starredColumnIndex = cursor.getColumnIndex(ContactsContract.Data.STARRED);
         int photoColumnIndex = cursor.getColumnIndex(ContactsContract.Data.PHOTO_URI);
         int thumbnailColumnIndex = cursor.getColumnIndex(ContactsContract.Data.PHOTO_THUMBNAIL_URI);
-        int phoneNumberIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
         int mimetypeColumnIndex = cursor.getColumnIndex(ContactsContract.Data.MIMETYPE);
         int dataColumnIndex = cursor.getColumnIndex(ContactsContract.Data.DATA1);
         while (!cursor.isAfterLast()) {
@@ -79,13 +78,16 @@ public class RxContacts {
                 ColumnMapper.mapStarred(cursor, contact, starredColumnIndex);
                 ColumnMapper.mapPhoto(cursor, contact, photoColumnIndex);
                 ColumnMapper.mapThumbnail(cursor, contact, thumbnailColumnIndex);
-                ColumnMapper.mapPhoneNumber(cursor, contact, phoneNumberIndex);
                 contacts.put(id, contact);
             } else {
                 String mimetype = cursor.getString(mimetypeColumnIndex);
                 switch (mimetype) {
                     case ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE: {
                         ColumnMapper.mapEmail(cursor, contact, dataColumnIndex);
+                        break;
+                    }
+                    case ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE: {
+                        ColumnMapper.mapPhoneNumber(cursor, contact, dataColumnIndex);
                         break;
                     }
                 }
@@ -107,4 +109,5 @@ public class RxContacts {
                 ContactsContract.Data.CONTACT_ID
         );
     }
+
 }
