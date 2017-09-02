@@ -19,6 +19,8 @@ package com.wafflecopter.multicontactpicker.RxContacts;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.util.LongSparseArray;
@@ -29,15 +31,24 @@ import io.reactivex.ObservableOnSubscribe;
 
 
 public class RxContacts {
-    private static final String[] PROJECTION = {
-            ContactsContract.Data.CONTACT_ID,
-            ContactsContract.Data.DISPLAY_NAME_PRIMARY,
-            ContactsContract.Data.STARRED,
-            ContactsContract.Data.PHOTO_URI,
-            ContactsContract.Data.PHOTO_THUMBNAIL_URI,
-            ContactsContract.Data.DATA1,
-            ContactsContract.Data.MIMETYPE,
-            ContactsContract.Data.IN_VISIBLE_GROUP
+
+    private final String DISPLAY_NAME = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
+            ContactsContract.Contacts.DISPLAY_NAME_PRIMARY : ContactsContract.Contacts.DISPLAY_NAME;
+
+    private Uri PHONE_CONTENT_URI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+    private Uri EMAIL_CONTENT_URI = ContactsContract.CommonDataKinds.Email.CONTENT_URI;
+
+    private String HAS_PHONE_NUMBER = ContactsContract.Contacts.HAS_PHONE_NUMBER;
+
+    private final String[] PROJECTION = {
+            ContactsContract.Contacts._ID,
+            ContactsContract.Contacts.IN_VISIBLE_GROUP,
+            DISPLAY_NAME,
+            ContactsContract.Contacts.STARRED,
+            ContactsContract.Contacts.PHOTO_URI,
+            ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
+            HAS_PHONE_NUMBER
+
     };
 
     private ContentResolver mResolver;
@@ -55,19 +66,17 @@ public class RxContacts {
         mResolver = context.getContentResolver();
     }
 
-
     private void fetch (ObservableEmitter emitter) {
         LongSparseArray<Contact> contacts = new LongSparseArray<>();
         Cursor cursor = createCursor();
         cursor.moveToFirst();
-        int idColumnIndex = cursor.getColumnIndex(ContactsContract.Data.CONTACT_ID);
-        int inVisibleGroupColumnIndex = cursor.getColumnIndex(ContactsContract.Data.IN_VISIBLE_GROUP);
-        int displayNamePrimaryColumnIndex = cursor.getColumnIndex(ContactsContract.Data.DISPLAY_NAME_PRIMARY);
-        int starredColumnIndex = cursor.getColumnIndex(ContactsContract.Data.STARRED);
-        int photoColumnIndex = cursor.getColumnIndex(ContactsContract.Data.PHOTO_URI);
-        int thumbnailColumnIndex = cursor.getColumnIndex(ContactsContract.Data.PHOTO_THUMBNAIL_URI);
-        int mimetypeColumnIndex = cursor.getColumnIndex(ContactsContract.Data.MIMETYPE);
-        int dataColumnIndex = cursor.getColumnIndex(ContactsContract.Data.DATA1);
+        int idColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts._ID);
+        int inVisibleGroupColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts.IN_VISIBLE_GROUP);
+        int displayNamePrimaryColumnIndex = cursor.getColumnIndex(DISPLAY_NAME);
+        int starredColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts.STARRED);
+        int photoColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI);
+        int thumbnailColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI);
+
         while (!cursor.isAfterLast()) {
             long id = cursor.getLong(idColumnIndex);
             Contact contact = contacts.get(id, null);
@@ -78,19 +87,31 @@ public class RxContacts {
                 ColumnMapper.mapStarred(cursor, contact, starredColumnIndex);
                 ColumnMapper.mapPhoto(cursor, contact, photoColumnIndex);
                 ColumnMapper.mapThumbnail(cursor, contact, thumbnailColumnIndex);
-                contacts.put(id, contact);
-            } else {
-                String mimetype = cursor.getString(mimetypeColumnIndex);
-                switch (mimetype) {
-                    case ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE: {
-                        ColumnMapper.mapEmail(cursor, contact, dataColumnIndex);
-                        break;
+
+                Cursor emailCursor = mResolver.query(EMAIL_CONTENT_URI, null,
+                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{String.valueOf(id)}, null);
+                if(emailCursor != null) {
+                    int emailDataColumnIndex = emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA);
+                    while (emailCursor.moveToNext()) {
+                        ColumnMapper.mapEmail(emailCursor, contact, emailDataColumnIndex);
                     }
-                    case ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE: {
-                        ColumnMapper.mapPhoneNumber(cursor, contact, dataColumnIndex);
-                        break;
+                    emailCursor.close();
+                }
+
+                int hasPhoneNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(HAS_PHONE_NUMBER)));
+                if (hasPhoneNumber > 0) {
+                    Cursor phoneCursor = mResolver.query(PHONE_CONTENT_URI, null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{String.valueOf(id)}, null);
+                    if(phoneCursor != null) {
+                        int phoneNumberColumnIndex = phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                        while (phoneCursor.moveToNext()) {
+                            ColumnMapper.mapPhoneNumber(phoneCursor, contact, phoneNumberColumnIndex);
+                        }
+                        phoneCursor.close();
                     }
                 }
+
+                contacts.put(id, contact);
             }
             cursor.moveToNext();
         }
@@ -102,11 +123,11 @@ public class RxContacts {
 
     private Cursor createCursor () {
         return mResolver.query(
-                ContactsContract.Data.CONTENT_URI,
+                ContactsContract.Contacts.CONTENT_URI,
                 PROJECTION,
                 null,
                 null,
-                ContactsContract.Data.CONTACT_ID
+                ContactsContract.Contacts._ID
         );
     }
 

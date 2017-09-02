@@ -1,6 +1,8 @@
 package com.wafflecopter.multicontactpickerexample;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -8,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.wafflecopter.multicontactpicker.ContactResult;
 import com.wafflecopter.multicontactpicker.MultiContactPicker;
@@ -28,14 +31,19 @@ public class MainActivity extends AppCompatActivity {
         btnOpenPicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new MultiContactPicker.Builder(MainActivity.this) //Activity context
-                        .theme(R.style.MyCustomPickerTheme) //Optional - default: Inherits project style
-                        .hideScrollbar(false) //Optional - default: false
-                        .showTrack(true) //Optional - default: true
-                        .handleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Green
-                        .bubbleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Green
-                        .textColor(Color.WHITE) //Optional - default: White
-                        .showPickerForResult(CONTACT_PICKER_REQUEST);
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                    new MultiContactPicker.Builder(MainActivity.this) //Activity/fragment context
+                            .theme(R.style.MyCustomPickerTheme) //Optional - default: MultiContactPicker.Azure
+                            .hideScrollbar(false) //Optional - default: false
+                            .showTrack(true) //Optional - default: true
+                            .searchIconColor(Color.WHITE) //Option - default: White
+                            .handleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Azure Blue
+                            .bubbleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Azure Blue
+                            .bubbleTextColor(Color.WHITE) //Optional - default: White
+                            .showPickerForResult(CONTACT_PICKER_REQUEST);
+                }else{
+                    Toast.makeText(MainActivity.this, "Remember to go into settings and enable the contacts permission.", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }

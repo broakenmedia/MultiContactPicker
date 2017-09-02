@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="MultiContactPicker.Azure" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowActionBar">false</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">@color/azureColorPrimary</item>
+        <item name="colorPrimaryDark">@color/azureColorPrimaryDark</item>
+        <item name="mcpToolbarTheme">@style/Toolbar.Azure</item>
+        <item name="mcpListPopupWindowStyleTheme">@style/Popup.Azure</item>
+    </style>
+
+    <style name="Toolbar.Azure" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+
+    </style>
+
+    <style name="Popup.Azure" parent="Widget.AppCompat.Light.ListPopupWindow">
+
+    </style>
+
+</resources>

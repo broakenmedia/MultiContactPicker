@@ -19,11 +19,13 @@ public class MultiContactPicker {
 
         protected transient Activity acc;
         protected transient Fragment frag;
-        protected Integer theme;
+        @StyleRes
+        protected int theme = R.style.MultiContactPicker_Azure;
         protected int bubbleColor;
-        protected int textColor;
+        protected int bubbleTextColor;
         protected int handleColor;
         protected int trackColor;
+        protected Integer searchIconColor;
         protected boolean hideScrollbar;
         protected boolean showTrack = true;
 
@@ -45,8 +47,8 @@ public class MultiContactPicker {
             return this;
         }
 
-        public Builder textColor(@ColorInt int textColor) {
-            this.textColor = textColor;
+        public Builder bubbleTextColor(@ColorInt int textColor) {
+            this.bubbleTextColor = textColor;
             return this;
         }
 
@@ -57,6 +59,11 @@ public class MultiContactPicker {
 
         public Builder trackColor(@ColorInt int trackColor) {
             this.trackColor = trackColor;
+            return this;
+        }
+
+        public Builder searchIconColor(@ColorInt Integer searchIconColor) {
+            this.searchIconColor = searchIconColor;
             return this;
         }
 

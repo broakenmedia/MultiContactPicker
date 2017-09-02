@@ -1,60 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.wafflecopter.multicontactpicker.MultiContactPickerActivity">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
-    <com.l4digital.fastscroll.FastScrollRecyclerView
-        android:id="@+id/recyclerView"
+    <FrameLayout
+        android:id="@+id/toolbar_container"
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content"
+        android:visibility="visible">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?colorPrimary"
+            app:theme="?mcpToolbarTheme"
+            app:popupTheme="?mcpListPopupWindowStyleTheme"/>
+
+        <com.miguelcatalan.materialsearchview.MaterialSearchView
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </FrameLayout>
+
+
+    <RelativeLayout
+
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/borderView"
-        app:bubbleColor="#00bb00"
-        app:bubbleTextColor="#ffffff"
-        app:handleColor="#999999"
-        app:hideScrollbar="false"
-        app:showTrack="false"
-        app:trackColor="#bbbbbb"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp"/>
+        tools:context="com.wafflecopter.multicontactpicker.MultiContactPickerActivity">
 
-    <View
-        android:id="@+id/borderView"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_above="@+id/controlPanel"
-        android:background="@color/border_color"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/borderView">
 
-    <LinearLayout
-        android:id="@+id/controlPanel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:gravity="right"
-        android:orientation="horizontal"
-        >
+            <com.l4digital.fastscroll.FastScrollRecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"
+                app:bubbleColor="@color/azureColorPrimaryDark"
+                app:bubbleTextColor="#ffffff"
+                app:handleColor="@color/azureColorPrimaryDark"
+                app:hideScrollbar="false"
+                app:showTrack="false"
+                tools:layout_editor_absoluteX="8dp"
+                tools:layout_editor_absoluteY="8dp"/>
 
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:visibility="visible"/>
+        </FrameLayout>
 
-        <TextView
-            android:id="@+id/tvSelect"
-            android:layout_width="wrap_content"
+        <View
+            android:id="@+id/borderView"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@+id/controlPanel"
+            android:background="@color/border_color"/>
+
+        <LinearLayout
+            android:id="@+id/controlPanel"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:enabled="false"
-            android:focusable="true"
-            android:gravity="center"
-            android:paddingBottom="15dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="15dp"
-            android:text="Select"
-            android:textColor="@color/selector_contact_select_text"
-            android:textSize="16sp"/>
-    </LinearLayout>
+            android:layout_alignParentBottom="true"
+            android:gravity="right"
+            android:orientation="horizontal"
+            >
 
-</RelativeLayout>
+
+            <TextView
+                android:id="@+id/tvSelect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:enabled="false"
+                android:focusable="true"
+                android:gravity="center"
+                android:paddingBottom="15dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="15dp"
+                android:text="Select"
+                android:textColor="@color/selector_contact_select_text"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+</LinearLayout>

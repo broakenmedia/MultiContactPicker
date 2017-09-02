@@ -1,14 +1,20 @@
 package com.wafflecopter.multicontactpicker;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.l4digital.fastscroll.FastScrollRecyclerView;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.wafflecopter.multicontactpicker.RxContacts.Contact;
 import com.wafflecopter.multicontactpicker.RxContacts.RxContacts;
 
@@ -19,16 +25,21 @@ import java.util.List;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
-public class MultiContactPickerActivity extends AppCompatActivity {
+public class MultiContactPickerActivity extends AppCompatActivity implements MaterialSearchView.OnQueryTextListener {
 
     public static final String EXTRA_RESULT_SELECTION = "extra_result_selection";
-
     private FastScrollRecyclerView recyclerView;
     private List<Contact> contactList = new ArrayList<>();
-    private MultiContactPickerAdapter adapter;
     private TextView tvSelectBtn;
+    private MultiContactPickerAdapter adapter;
+    private Toolbar toolbar;
+    private MaterialSearchView searchView;
+    private ProgressBar progressBar;
+    private MenuItem searchMenuItem;
+    private MultiContactPicker.Builder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +48,15 @@ public class MultiContactPickerActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent == null) return;
 
-        MultiContactPicker.Builder builder = (MultiContactPicker.Builder) intent.getSerializableExtra("builder");
+        builder = (MultiContactPicker.Builder) intent.getSerializableExtra("builder");
 
-        setTheme(builder.theme != null ? builder.theme : 0);
+        setTheme(builder.theme);
 
         setContentView(R.layout.activity_multi_contact_picker);
 
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        searchView = (MaterialSearchView) findViewById(R.id.search_view);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         tvSelectBtn = (TextView) findViewById(R.id.tvSelect);
         recyclerView = (FastScrollRecyclerView) findViewById(R.id.recyclerView);
 
@@ -53,6 +67,7 @@ public class MultiContactPickerActivity extends AppCompatActivity {
         }
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
 
         adapter = new MultiContactPickerAdapter(contactList, new MultiContactPickerAdapter.ContactSelectListener() {
             @Override
@@ -83,12 +98,14 @@ public class MultiContactPickerActivity extends AppCompatActivity {
     }
 
     private void initialiseUI(MultiContactPicker.Builder builder){
+        setSupportActionBar(toolbar);
+        searchView.setOnQueryTextListener(this);
         if(builder.bubbleColor != 0)
             recyclerView.setBubbleColor(builder.bubbleColor);
         if(builder.handleColor != 0)
             recyclerView.setHandleColor(builder.handleColor);
-        if(builder.textColor != 0)
-            recyclerView.setBubbleTextColor(builder.textColor);
+        if(builder.bubbleTextColor != 0)
+            recyclerView.setBubbleTextColor(builder.bubbleTextColor);
         if(builder.trackColor != 0)
             recyclerView.setTrackColor(builder.trackColor);
         recyclerView.setHideScrollbar(builder.hideScrollbar);
@@ -107,7 +124,14 @@ public class MultiContactPickerActivity extends AppCompatActivity {
     }
 
     private void loadContacts(){
+        progressBar.setVisibility(View.VISIBLE);
         RxContacts.fetch(this)
+                .filter(new Predicate<Contact>() {
+                    @Override
+                    public boolean test(Contact contact) throws Exception {
+                        return contact.getDisplayName() != null;
+                    }
+                })
                 .toSortedList(new Comparator<Contact>() {
                     @Override
                     public int compare(Contact contact, Contact t1) {
@@ -126,11 +150,58 @@ public class MultiContactPickerActivity extends AppCompatActivity {
                         if(adapter != null && contacts.size() > 0){
                             adapter.notifyDataSetChanged();
                         }
+                        progressBar.setVisibility(View.GONE);
                     }
                     @Override
                     public void onError(Throwable e) {
+                        progressBar.setVisibility(View.GONE);
                         e.printStackTrace();
                     }
                 });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        searchMenuItem = menu.findItem(R.id.action_search);
+        setSearchIconColor(searchMenuItem, builder.searchIconColor);
+        searchView.setMenuItem(searchMenuItem);
+        return true;
+    }
+
+    private void setSearchIconColor(MenuItem menuItem, final Integer color) {
+        if(color != null) {
+            Drawable drawable = menuItem.getIcon();
+            if (drawable != null) {
+                drawable = DrawableCompat.wrap(drawable);
+                DrawableCompat.setTint(drawable.mutate(), color);
+                menuItem.setIcon(drawable);
+            }
+        }
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        if(adapter != null){
+            adapter.getFilter().filter(query);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        if(adapter != null){
+            adapter.getFilter().filter(newText);
+        }
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (searchView.isSearchOpen()) {
+            searchView.closeSearch();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

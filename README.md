@@ -28,7 +28,7 @@ Add this to your module build.gradle
 
 ``` gradle
 dependencies {
-    compile 'com.github.broakenmedia:MultiContactPicker:1.2'
+    compile 'com.github.broakenmedia:MultiContactPicker:1.3'
 }
 ```
 ### Usage
@@ -36,14 +36,15 @@ dependencies {
 Open the picker in your activity/fragment:
 
 ```java
-new MultiContactPicker.Builder(this) //Activity/fragment context
-    .theme(R.style.MyCustomPickerTheme) //Optional - default: Inherits project style
-    .hideScrollbar(false) //Optional - default: false
-    .showTrack(true) //Optional - default: true
-    .handleColor(ContextCompat.getColor(this, R.color.colorPrimary)) //Optional - default: Green
-    .bubbleColor(ContextCompat.getColor(this, R.color.colorPrimary)) //Optional - default: Green
-    .textColor(Color.WHITE) //Optional - default: White
-    .showPickerForResult(CONTACT_PICKER_REQUEST);
+new MultiContactPicker.Builder(MainActivity.this) //Activity/fragment context
+                            .theme(R.style.MyCustomPickerTheme) //Optional - default: MultiContactPicker.Azure
+                            .hideScrollbar(false) //Optional - default: false
+                            .showTrack(true) //Optional - default: true
+                            .searchIconColor(Color.WHITE) //Option - default: White
+                            .handleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Azure Blue
+                            .bubbleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Azure Blue
+                            .bubbleTextColor(Color.WHITE) //Optional - default: White
+                            .showPickerForResult(CONTACT_PICKER_REQUEST);
 ```
 
 Then listen for results:
@@ -64,15 +65,19 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 ```
 
 ### Themeing
-MultiContactPicker will inherit it's theme from the base project, however you can use a custom theme if you wish:
+MultiContactPicker has a default theme called Azure (Screenshot), however you can use a custom theme if you wish by using both the builder calls above and using styles:
 
 ```xml
-<style name="MyCustomTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-    <item name="colorPrimary">@color/primary</item>
-    <item name="colorPrimaryDark">@color/primary_dark</item>
-    <item name="colorAccent">@color/accent</item>
-    <item name="android:textColorPrimary">@color/primary_text</item>
-    <item name="android:textColorSecondary">@color/secondary_text</item>
+<style name="MyCustomPickerTheme" parent="MultiContactPicker.Azure">
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="mcpToolbarTheme">@style/MyCustomToolbarTheme</item>
+    <item name="mcpListPopupWindowStyleTheme">@style/MyCustomToolbarTheme</item>
+</style>
+
+<style name="MyCustomToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
+    <item name="android:textColorPrimary">@color/colorAccent</item>
+    <item name="android:textColorSecondary">@color/colorAccent</item>
 </style>
 ```
 
@@ -85,9 +90,11 @@ MultiContactPicker utilises code from these great libraries:
 
 [RoundedLetterView](https://github.com/pavlospt/RoundedLetterView)
 
-[RxContacts2](https://github.com/mirrajabi/rx-contacts2)
+[RxContacts2 (Heavily Modified)](https://github.com/mirrajabi/rx-contacts2)
 
 [RxAndroid](https://github.com/ReactiveX/RxAndroid)
+
+[MaterialSearchView](https://github.com/MiguelCatalan/MaterialSearchView)
 
 
 ## License
