@@ -8,7 +8,7 @@ A simple, material design multi-contact picker using RecyclerView and Alphabetic
 **Note:** The contacts will always have the first letter gmail-style avatars, contact photos are not used at this time.
 
 
-Screenshot (Azure Theme)
+Screenshot (Default Azure Theme)
 :-------------------------
 ![](http://i.imgur.com/idrbwzL.png)
 
