@@ -81,7 +81,7 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             contactViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    getItem(i).setSelected(!contactItem.isSelected());
+                    setContactSelected(contactItem.getId());
                     notifyDataSetChanged();
                     if (listener != null) {
                         listener.onContactSelected(getItem(i), getSelectedContactsCount());
@@ -91,13 +91,29 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
+    private void setContactSelected(long id){
+        int pos = getItemPosition(contactItemList, id);
+        contactItemList.get(pos).setSelected(!contactItemList.get(pos).isSelected());
+    }
+
+    private int getItemPosition(List<Contact> list, long mid){
+        int i = 0;
+        for(Contact contact : list){
+            if(contact.getId() == mid){
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
+
     private int getSelectedContactsCount(){
         return getSelectedContacts().size();
     }
 
     List<Contact> getSelectedContacts(){
         List<Contact> selectedContacts = new ArrayList<>();
-        for(Contact contact : contactItemList){
+        for(Contact contact : contactItemListOriginal){
             if(contact.isSelected()){
                 selectedContacts.add(contact);
             }
