@@ -17,6 +17,7 @@ public class Contact implements Comparable<Contact> {
     private Uri mThumbnail;
     private List<String> mEmails = new ArrayList<>();
     private List<String> mPhoneNumbers = new ArrayList<>();
+    private List<ContactAddress> mAddresses = new ArrayList<>();
     private boolean isSelected;
     private int backgroundColor = Color.BLUE;
 
@@ -101,6 +102,14 @@ public class Contact implements Comparable<Contact> {
         this.backgroundColor = backgroundColor;
     }
 
+    public List<ContactAddress> getAddresses() {
+        return mAddresses;
+    }
+
+    public void setAddresses(List<ContactAddress> addresses) {
+        this.mAddresses = addresses;
+    }
+
     @Override
     public int compareTo(Contact other) {
         if(mDisplayName != null && other.mDisplayName != null)
@@ -124,4 +133,5 @@ public class Contact implements Comparable<Contact> {
         Contact contact = (Contact) o;
         return mId == contact.mId;
     }
+
 }

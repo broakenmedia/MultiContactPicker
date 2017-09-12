@@ -22,6 +22,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.StructuredPostal;
 import android.support.annotation.NonNull;
 import android.util.LongSparseArray;
 
@@ -32,15 +33,14 @@ import io.reactivex.ObservableOnSubscribe;
 
 public class RxContacts {
 
-    private final String DISPLAY_NAME = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
-            ContactsContract.Contacts.DISPLAY_NAME_PRIMARY : ContactsContract.Contacts.DISPLAY_NAME;
+    private static final String DISPLAY_NAME = ContactsContract.Contacts.DISPLAY_NAME_PRIMARY;
 
-    private Uri PHONE_CONTENT_URI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-    private Uri EMAIL_CONTENT_URI = ContactsContract.CommonDataKinds.Email.CONTENT_URI;
+    private static final Uri PHONE_CONTENT_URI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+    private static final Uri EMAIL_CONTENT_URI = ContactsContract.CommonDataKinds.Email.CONTENT_URI;
 
-    private String HAS_PHONE_NUMBER = ContactsContract.Contacts.HAS_PHONE_NUMBER;
+    private static final String HAS_PHONE_NUMBER = ContactsContract.Contacts.HAS_PHONE_NUMBER;
 
-    private final String[] PROJECTION = {
+    private static final String[] PROJECTION = {
             ContactsContract.Contacts._ID,
             ContactsContract.Contacts.IN_VISIBLE_GROUP,
             DISPLAY_NAME,
@@ -48,7 +48,18 @@ public class RxContacts {
             ContactsContract.Contacts.PHOTO_URI,
             ContactsContract.Contacts.PHOTO_THUMBNAIL_URI,
             HAS_PHONE_NUMBER
+    };
 
+    private static final String[] ADDRESS_PROJECTION = new String[] {
+        StructuredPostal.TYPE,
+            StructuredPostal.LABEL,
+            StructuredPostal.STREET,
+            StructuredPostal.POBOX,
+            StructuredPostal.NEIGHBORHOOD,
+            StructuredPostal.CITY,
+            StructuredPostal.REGION,
+            StructuredPostal.POSTCODE,
+            StructuredPostal.COUNTRY
     };
 
     private ContentResolver mResolver;
@@ -109,6 +120,40 @@ public class RxContacts {
                         }
                         phoneCursor.close();
                     }
+                }
+
+                Cursor addressCursor = mResolver.query(ContactsContract.Data.CONTENT_URI,
+                    ADDRESS_PROJECTION,
+                    ContactsContract.Data.CONTACT_ID + "=? AND " + StructuredPostal.MIMETYPE + "= ?",
+                    new String[] {String.valueOf(id), StructuredPostal.CONTENT_ITEM_TYPE},
+                    null
+                );
+
+                if (addressCursor != null) {
+                    int typeIndex = addressCursor.getColumnIndex(StructuredPostal.TYPE);
+                    int labelIndex = addressCursor.getColumnIndex(StructuredPostal.LABEL);
+                    int streetIndex = addressCursor.getColumnIndex(StructuredPostal.STREET);
+                    int poboxIndex = addressCursor.getColumnIndex(StructuredPostal.POBOX);
+                    int neighborhoodIndex = addressCursor.getColumnIndex(StructuredPostal.NEIGHBORHOOD);
+                    int cityIndex = addressCursor.getColumnIndex(StructuredPostal.CITY);
+                    int regionIndex = addressCursor.getColumnIndex(StructuredPostal.REGION);
+                    int postCodeIndex = addressCursor.getColumnIndex(StructuredPostal.POSTCODE);
+                    int countryIndex = addressCursor.getColumnIndex(StructuredPostal.COUNTRY);
+
+                    while (addressCursor.moveToNext()) {
+                        contact.getAddresses().add(new ContactAddress(
+                            addressCursor.getInt(typeIndex),
+                            addressCursor.getString(labelIndex),
+                            addressCursor.getString(streetIndex),
+                            addressCursor.getString(poboxIndex),
+                            addressCursor.getString(neighborhoodIndex),
+                            addressCursor.getString(cityIndex),
+                            addressCursor.getString(regionIndex),
+                            addressCursor.getString(postCodeIndex),
+                            addressCursor.getString(countryIndex)
+                        ));
+                    }
+                    addressCursor.close();
                 }
 
                 contacts.put(id, contact);

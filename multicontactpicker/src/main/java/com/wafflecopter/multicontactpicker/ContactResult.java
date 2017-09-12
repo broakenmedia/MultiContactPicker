@@ -5,10 +5,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.wafflecopter.multicontactpicker.RxContacts.Contact;
+import com.wafflecopter.multicontactpicker.RxContacts.ContactAddress;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class ContactResult implements Parcelable {
 
     private String mDisplayName;
@@ -17,6 +19,7 @@ public class ContactResult implements Parcelable {
     private Uri mThumbnail;
     private List<String> mEmails = new ArrayList<>();
     private List<String> mPhoneNumbers = new ArrayList<>();
+    private List<PostalAddress> mPostalAddresses = new ArrayList<>();
 
     public String getDisplayName() {
         return mDisplayName;
@@ -50,26 +53,12 @@ public class ContactResult implements Parcelable {
         this.mThumbnail = contact.getThumbnail();
         this.mEmails.clear(); this.mEmails.addAll(contact.getEmails());
         this.mPhoneNumbers.clear(); this.mPhoneNumbers.addAll(contact.getPhoneNumbers());
+        this.mPostalAddresses.clear();
+        for (ContactAddress contactAddress : contact.getAddresses()) {
+            this.mPostalAddresses.add(new PostalAddress(contactAddress));
+        }
     }
 
-    protected ContactResult(Parcel in) {
-        mDisplayName = in.readString();
-        mStarred = in.readByte() != 0x00;
-        mPhoto = (Uri) in.readValue(Uri.class.getClassLoader());
-        mThumbnail = (Uri) in.readValue(Uri.class.getClassLoader());
-        if (in.readByte() == 0x01) {
-            mEmails = new ArrayList<>();
-            in.readList(mEmails, String.class.getClassLoader());
-        } else {
-            mEmails = null;
-        }
-        if (in.readByte() == 0x01) {
-            mPhoneNumbers = new ArrayList<>();
-            in.readList(mPhoneNumbers, String.class.getClassLoader());
-        } else {
-            mPhoneNumbers = null;
-        }
-    }
 
     @Override
     public int describeContents() {
@@ -78,29 +67,30 @@ public class ContactResult implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mDisplayName);
-        dest.writeByte((byte) (mStarred ? 0x01 : 0x00));
-        dest.writeValue(mPhoto);
-        dest.writeValue(mThumbnail);
-        if (mEmails == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(mEmails);
-        }
-        if (mPhoneNumbers == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(mPhoneNumbers);
-        }
+        dest.writeString(this.mDisplayName);
+        dest.writeByte(this.mStarred ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.mPhoto, flags);
+        dest.writeParcelable(this.mThumbnail, flags);
+        dest.writeStringList(this.mEmails);
+        dest.writeStringList(this.mPhoneNumbers);
+        dest.writeList(this.mPostalAddresses);
     }
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ContactResult> CREATOR = new Parcelable.Creator<ContactResult>() {
+    protected ContactResult(Parcel in) {
+        this.mDisplayName = in.readString();
+        this.mStarred = in.readByte() != 0;
+        this.mPhoto = in.readParcelable(Uri.class.getClassLoader());
+        this.mThumbnail = in.readParcelable(Uri.class.getClassLoader());
+        this.mEmails = in.createStringArrayList();
+        this.mPhoneNumbers = in.createStringArrayList();
+        this.mPostalAddresses = new ArrayList<>();
+        in.readList(this.mPostalAddresses, PostalAddress.class.getClassLoader());
+    }
+
+    public static final Creator<ContactResult> CREATOR = new Creator<ContactResult>() {
         @Override
-        public ContactResult createFromParcel(Parcel in) {
-            return new ContactResult(in);
+        public ContactResult createFromParcel(Parcel source) {
+            return new ContactResult(source);
         }
 
         @Override
