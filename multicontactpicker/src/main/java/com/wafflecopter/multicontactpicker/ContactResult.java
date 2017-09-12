@@ -45,6 +45,9 @@ public class ContactResult implements Parcelable {
         return mPhoneNumbers;
     }
 
+    public List<PostalAddress> getPostalAddresses() {
+        return mPostalAddresses;
+    }
 
     public ContactResult(Contact contact){
         this.mDisplayName = contact.getDisplayName();
