@@ -1,13 +1,13 @@
-package com.wafflecopter.multicontactpicker;
+package com.wafflecopter.multicontactpicker.RxContacts;
 
+import android.content.res.Resources;
 import android.os.Parcel;
-
-import com.wafflecopter.multicontactpicker.RxContacts.ContactAddress;
+import android.provider.ContactsContract.CommonDataKinds.StructuredPostal;
 
 @SuppressWarnings({"WeakerAccess","unused"})
-public class PostalAddress implements android.os.Parcelable {
+public class PostalAddress implements android.os.Parcelable,TypeLabelInterface {
 
-    private int mType;
+    private final int mType;
     private String mLabel;
     private String mFormattedAddress;
     private String mStreet;
@@ -19,27 +19,24 @@ public class PostalAddress implements android.os.Parcelable {
     private String mCountry;
 
     public PostalAddress() {
+        mType = StructuredPostal.TYPE_OTHER;
     }
 
-    public PostalAddress(ContactAddress contactAddress) {
-        mType = contactAddress.getType();
-        mLabel = contactAddress.getLabel();
-        mFormattedAddress = contactAddress.getFormattedAddress();
-        mStreet = contactAddress.getStreet();
-        mPobox = contactAddress.getPobox();
-        mNeighborhood = contactAddress.getNeighborhood();
-        mCity = contactAddress.getCity();
-        mRegion = contactAddress.getRegion();
-        mPostcode = contactAddress.getPostcode();
-        mCountry = contactAddress.getCountry();
+    public PostalAddress(int type, String label, String formattedAddress, String street, String pobox, String neighborhood, String city, String region, String postcode, String country) {
+        mType = type;
+        mLabel = label;
+        mFormattedAddress = formattedAddress;
+        mStreet = street;
+        mPobox = pobox;
+        mNeighborhood = neighborhood;
+        mCity = city;
+        mRegion = region;
+        mPostcode = postcode;
+        mCountry = country;
     }
 
     public int getType() {
         return mType;
-    }
-
-    public void setType(int type) {
-        mType = type;
     }
 
     public String getLabel() {
@@ -111,7 +108,7 @@ public class PostalAddress implements android.os.Parcelable {
     }
 
     public void setFormattedAddress(String formattedAddress) {
-        this.mFormattedAddress = mFormattedAddress;
+        mFormattedAddress = formattedAddress;
     }
 
     @Override
@@ -125,14 +122,9 @@ public class PostalAddress implements android.os.Parcelable {
 
         PostalAddress address = (PostalAddress) o;
 
-        if (mType != address.mType) {
-            return false;
-        }
-        if (mLabel != null ? !mLabel.equals(address.mLabel) : address.mLabel != null) {
-            return false;
-        }
-        return mFormattedAddress != null ? mFormattedAddress.equals(address.mFormattedAddress)
-            : address.mFormattedAddress == null;
+        return mType == address.mType && (mLabel != null ? mLabel.equals(address.mLabel)
+            : address.mLabel == null && (mFormattedAddress != null ? mFormattedAddress
+                .equals(address.mFormattedAddress) : address.mFormattedAddress == null));
 
     }
 
@@ -143,6 +135,17 @@ public class PostalAddress implements android.os.Parcelable {
         result = 31 * result + (mFormattedAddress != null ? mFormattedAddress.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return getFormattedAddress();
+    }
+
+    @Override
+    public CharSequence getTypeLabel(Resources resources) {
+        return StructuredPostal.getTypeLabel(resources, getType(), getLabel());
+    }
+
 
     @Override
     public int describeContents() {
@@ -177,30 +180,14 @@ public class PostalAddress implements android.os.Parcelable {
     }
 
     public static final Creator<PostalAddress> CREATOR = new Creator<PostalAddress>() {
-      @Override
-      public PostalAddress createFromParcel(Parcel source) {
-        return new PostalAddress(source);
-      }
+        @Override
+        public PostalAddress createFromParcel(Parcel source) {
+            return new PostalAddress(source);
+        }
 
-      @Override
-      public PostalAddress[] newArray(int size) {
-        return new PostalAddress[size];
-      }
+        @Override
+        public PostalAddress[] newArray(int size) {
+            return new PostalAddress[size];
+        }
     };
-
-    @Override
-    public String toString() {
-        return "PostalAddress{" +
-            "type=" + getType() +
-            ", label='" + getLabel() + '\'' +
-            ", street='" + getStreet() + '\'' +
-            ", pobox='" + getPobox() + '\'' +
-            ", neighborhood='" + getNeighborhood() + '\'' +
-            ", city='" + getCity() + '\'' +
-            ", region='" + getRegion() + '\'' +
-            ", postcode='" + getPostcode() + '\'' +
-            ", country='" + getCountry() + '\'' +
-            ", formattedAddress='" + getFormattedAddress() + '\'' +
-            '}';
-    }
 }

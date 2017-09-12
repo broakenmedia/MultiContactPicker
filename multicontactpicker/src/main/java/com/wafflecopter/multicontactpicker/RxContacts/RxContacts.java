@@ -20,8 +20,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Email;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.StructuredPostal;
 import android.support.annotation.NonNull;
 import android.util.LongSparseArray;
@@ -65,10 +66,10 @@ public class RxContacts {
 
     private ContentResolver mResolver;
 
-    public static Observable<Contact> fetch (@NonNull final Context context) {
-        return Observable.create(new ObservableOnSubscribe<Contact>() {
+    public static Observable<ContactResult> fetch (@NonNull final Context context) {
+        return Observable.create(new ObservableOnSubscribe<ContactResult>() {
             @Override
-            public void subscribe(@NonNull ObservableEmitter<Contact> e) throws Exception {
+            public void subscribe(@NonNull ObservableEmitter<ContactResult> e) throws Exception {
                 new RxContacts(context).fetch(e);
             }
         });
@@ -79,7 +80,7 @@ public class RxContacts {
     }
 
     private void fetch (ObservableEmitter emitter) {
-        LongSparseArray<Contact> contacts = new LongSparseArray<>();
+        LongSparseArray<ContactResult> contacts = new LongSparseArray<>();
         Cursor cursor = createCursor();
         cursor.moveToFirst();
         int idColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts._ID);
@@ -91,9 +92,9 @@ public class RxContacts {
 
         while (!cursor.isAfterLast()) {
             long id = cursor.getLong(idColumnIndex);
-            Contact contact = contacts.get(id, null);
+            ContactResult contact = contacts.get(id, null);
             if (contact == null) {
-                contact = new Contact(id);
+                contact = new ContactResult(id);
                 ColumnMapper.mapInVisibleGroup(cursor, contact, inVisibleGroupColumnIndex);
                 ColumnMapper.mapDisplayName(cursor, contact, displayNamePrimaryColumnIndex);
                 ColumnMapper.mapStarred(cursor, contact, starredColumnIndex);
@@ -103,9 +104,17 @@ public class RxContacts {
                 Cursor emailCursor = mResolver.query(EMAIL_CONTENT_URI, null,
                         ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{String.valueOf(id)}, null);
                 if(emailCursor != null) {
-                    int emailDataColumnIndex = emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA);
+                    int emailTypeIndex = emailCursor.getColumnIndex(Email.TYPE);
+                    int emailLabelIndex = emailCursor.getColumnIndex(Email.LABEL);
+                    int emailDataColumnIndex = emailCursor.getColumnIndex(Email.DATA);
                     while (emailCursor.moveToNext()) {
-                        ColumnMapper.mapEmail(emailCursor, contact, emailDataColumnIndex);
+                        ColumnMapper.mapPhoneNumber(
+                            cursor,
+                            contact,
+                            emailTypeIndex,
+                            emailLabelIndex,
+                            emailDataColumnIndex
+                        );
                     }
                     emailCursor.close();
                 }
@@ -115,9 +124,18 @@ public class RxContacts {
                     Cursor phoneCursor = mResolver.query(PHONE_CONTENT_URI, null,
                             ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{String.valueOf(id)}, null);
                     if(phoneCursor != null) {
-                        int phoneNumberColumnIndex = phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                        int phoneNumberColumnIndex = phoneCursor.getColumnIndex(Phone.NUMBER);
+                        int phoneNumberTypeIndex = phoneCursor.getColumnIndex(Phone.TYPE);
+                        int phoneNumberLabelIndex = phoneCursor.getColumnIndex(Phone.LABEL);
+
                         while (phoneCursor.moveToNext()) {
-                            ColumnMapper.mapPhoneNumber(phoneCursor, contact, phoneNumberColumnIndex);
+                            ColumnMapper.mapPhoneNumber(
+                                cursor,
+                                contact,
+                                phoneNumberTypeIndex,
+                                phoneNumberLabelIndex,
+                                phoneNumberColumnIndex
+                            );
                         }
                         phoneCursor.close();
                     }
@@ -143,7 +161,7 @@ public class RxContacts {
                     int countryIndex = addressCursor.getColumnIndex(StructuredPostal.COUNTRY);
 
                     while (addressCursor.moveToNext()) {
-                        contact.getAddresses().add(new ContactAddress(
+                        contact.getAddresses().add(new PostalAddress(
                             addressCursor.getInt(typeIndex),
                             addressCursor.getString(labelIndex),
                             addressCursor.getString(formattedAddressIndex),
@@ -165,6 +183,7 @@ public class RxContacts {
         }
         cursor.close();
         for (int i = 0; i < contacts.size(); i++)
+            //noinspection unchecked
             emitter.onNext(contacts.valueAt(i));
         emitter.onComplete();
     }

@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.l4digital.fastscroll.FastScrollRecyclerView;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
-import com.wafflecopter.multicontactpicker.RxContacts.Contact;
+import com.wafflecopter.multicontactpicker.RxContacts.ContactResult;
 import com.wafflecopter.multicontactpicker.RxContacts.RxContacts;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
 
     public static final String EXTRA_RESULT_SELECTION = "extra_result_selection";
     private FastScrollRecyclerView recyclerView;
-    private List<Contact> contactList = new ArrayList<>();
+    private List<ContactResult> contactList = new ArrayList<>();
     private TextView tvSelectBtn;
     private MultiContactPickerAdapter adapter;
     private Toolbar toolbar;
@@ -71,7 +71,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
 
         adapter = new MultiContactPickerAdapter(contactList, new MultiContactPickerAdapter.ContactSelectListener() {
             @Override
-            public void onContactSelected(Contact contact, int totalSelectedContacts) {
+            public void onContactSelected(ContactResult contact, int totalSelectedContacts) {
                 tvSelectBtn.setEnabled(totalSelectedContacts > 0);
                 if(totalSelectedContacts > 0) {
                     tvSelectBtn.setText(getString(R.string.tv_select_btn_text_enabled, String.valueOf(totalSelectedContacts)));
@@ -89,7 +89,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
             @Override
             public void onClick(View view) {
                 Intent result = new Intent();
-                result.putExtra(EXTRA_RESULT_SELECTION, MultiContactPicker.buildResult(adapter.getSelectedContacts()));
+                result.putExtra(EXTRA_RESULT_SELECTION, adapter.getSelectedContacts());
                 setResult(RESULT_OK, result);
                 finish();
             }
@@ -126,25 +126,25 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
     private void loadContacts(){
         progressBar.setVisibility(View.VISIBLE);
         RxContacts.fetch(this)
-                .filter(new Predicate<Contact>() {
+                .filter(new Predicate<ContactResult>() {
                     @Override
-                    public boolean test(Contact contact) throws Exception {
+                    public boolean test(ContactResult contact) throws Exception {
                         return contact.getDisplayName() != null;
                     }
                 })
-                .toSortedList(new Comparator<Contact>() {
+                .toSortedList(new Comparator<ContactResult>() {
                     @Override
-                    public int compare(Contact contact, Contact t1) {
+                    public int compare(ContactResult contact, ContactResult t1) {
                         return contact.getDisplayName().compareToIgnoreCase(t1.getDisplayName());
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new SingleObserver<List<Contact>>() {
+                .subscribe(new SingleObserver<List<ContactResult>>() {
                     @Override
                     public void onSubscribe(Disposable d) {}
                     @Override
-                    public void onSuccess(List<Contact> contacts) {
+                    public void onSuccess(List<ContactResult> contacts) {
                         contactList.clear();
                         contactList.addAll(contacts);
                         if(adapter != null && contacts.size() > 0){
