@@ -106,4 +106,63 @@ public class ContactAddress {
   public void setFormattedAddress(String mFormattedAddress) {
     this.mFormattedAddress = mFormattedAddress;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    ContactAddress that = (ContactAddress) o;
+
+    if (mType != that.mType) {
+      return false;
+    }
+    if (mLabel != null ? !mLabel.equals(that.mLabel) : that.mLabel != null) {
+      return false;
+    }
+    if (mFormattedAddress != null ? !mFormattedAddress.equals(that.mFormattedAddress)
+        : that.mFormattedAddress != null) {
+      return false;
+    }
+    if (mStreet != null ? !mStreet.equals(that.mStreet) : that.mStreet != null) {
+      return false;
+    }
+    if (mPobox != null ? !mPobox.equals(that.mPobox) : that.mPobox != null) {
+      return false;
+    }
+    if (mNeighborhood != null ? !mNeighborhood.equals(that.mNeighborhood)
+        : that.mNeighborhood != null) {
+      return false;
+    }
+    if (mCity != null ? !mCity.equals(that.mCity) : that.mCity != null) {
+      return false;
+    }
+    if (mRegion != null ? !mRegion.equals(that.mRegion) : that.mRegion != null) {
+      return false;
+    }
+    if (mPostcode != null ? !mPostcode.equals(that.mPostcode) : that.mPostcode != null) {
+      return false;
+    }
+    return mCountry != null ? mCountry.equals(that.mCountry) : that.mCountry == null;
+
+  }
+
+  @Override
+  public int hashCode() {
+    int result = mType;
+    result = 31 * result + (mLabel != null ? mLabel.hashCode() : 0);
+    result = 31 * result + (mFormattedAddress != null ? mFormattedAddress.hashCode() : 0);
+    result = 31 * result + (mStreet != null ? mStreet.hashCode() : 0);
+    result = 31 * result + (mPobox != null ? mPobox.hashCode() : 0);
+    result = 31 * result + (mNeighborhood != null ? mNeighborhood.hashCode() : 0);
+    result = 31 * result + (mCity != null ? mCity.hashCode() : 0);
+    result = 31 * result + (mRegion != null ? mRegion.hashCode() : 0);
+    result = 31 * result + (mPostcode != null ? mPostcode.hashCode() : 0);
+    result = 31 * result + (mCountry != null ? mCountry.hashCode() : 0);
+    return result;
+  }
 }
