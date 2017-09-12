@@ -53,6 +53,7 @@ public class RxContacts {
     private static final String[] ADDRESS_PROJECTION = new String[] {
         StructuredPostal.TYPE,
             StructuredPostal.LABEL,
+            StructuredPostal.FORMATTED_ADDRESS,
             StructuredPostal.STREET,
             StructuredPostal.POBOX,
             StructuredPostal.NEIGHBORHOOD,
@@ -132,6 +133,7 @@ public class RxContacts {
                 if (addressCursor != null) {
                     int typeIndex = addressCursor.getColumnIndex(StructuredPostal.TYPE);
                     int labelIndex = addressCursor.getColumnIndex(StructuredPostal.LABEL);
+                    int formattedAddressIndex = addressCursor.getColumnIndex(StructuredPostal.FORMATTED_ADDRESS);
                     int streetIndex = addressCursor.getColumnIndex(StructuredPostal.STREET);
                     int poboxIndex = addressCursor.getColumnIndex(StructuredPostal.POBOX);
                     int neighborhoodIndex = addressCursor.getColumnIndex(StructuredPostal.NEIGHBORHOOD);
@@ -144,6 +146,7 @@ public class RxContacts {
                         contact.getAddresses().add(new ContactAddress(
                             addressCursor.getInt(typeIndex),
                             addressCursor.getString(labelIndex),
+                            addressCursor.getString(formattedAddressIndex),
                             addressCursor.getString(streetIndex),
                             addressCursor.getString(poboxIndex),
                             addressCursor.getString(neighborhoodIndex),

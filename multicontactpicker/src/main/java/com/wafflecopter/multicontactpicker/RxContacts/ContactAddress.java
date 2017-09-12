@@ -3,6 +3,7 @@ package com.wafflecopter.multicontactpicker.RxContacts;
 public class ContactAddress {
   private int mType;
   private String mLabel;
+  private String mFormattedAddress;
   private String mStreet;
   private String mPobox;
   private String mNeighborhood;
@@ -13,9 +14,10 @@ public class ContactAddress {
 
   public ContactAddress() {}
 
-  public ContactAddress(int type, String label, String street, String pobox, String neighborhood, String city, String region, String postcode, String country) {
+  public ContactAddress(int type, String label, String formattedAddress, String street, String pobox, String neighborhood, String city, String region, String postcode, String country) {
     mType = type;
     mLabel = label;
+    mFormattedAddress = formattedAddress;
     mStreet = street;
     mPobox = pobox;
     mNeighborhood = neighborhood;
@@ -95,5 +97,13 @@ public class ContactAddress {
 
   public void setCountry(String country) {
     mCountry = country;
+  }
+
+  public String getFormattedAddress() {
+    return mFormattedAddress;
+  }
+
+  public void setFormattedAddress(String mFormattedAddress) {
+    this.mFormattedAddress = mFormattedAddress;
   }
 }

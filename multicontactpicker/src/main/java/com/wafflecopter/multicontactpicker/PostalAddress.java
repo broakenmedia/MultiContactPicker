@@ -9,6 +9,7 @@ public class PostalAddress implements android.os.Parcelable {
 
     private int mType;
     private String mLabel;
+    private String mFormattedAddress;
     private String mStreet;
     private String mPobox;
     private String mNeighborhood;
@@ -23,6 +24,7 @@ public class PostalAddress implements android.os.Parcelable {
     public PostalAddress(ContactAddress contactAddress) {
         mType = contactAddress.getType();
         mLabel = contactAddress.getLabel();
+        mFormattedAddress = contactAddress.getFormattedAddress();
         mStreet = contactAddress.getStreet();
         mPobox = contactAddress.getPobox();
         mNeighborhood = contactAddress.getNeighborhood();
@@ -104,6 +106,13 @@ public class PostalAddress implements android.os.Parcelable {
         mCountry = country;
     }
 
+    public String getFormattedAddress() {
+        return mFormattedAddress;
+    }
+
+    public void setFormattedAddress(String formattedAddress) {
+        this.mFormattedAddress = mFormattedAddress;
+    }
 
     @Override
     public int describeContents() {
@@ -114,6 +123,7 @@ public class PostalAddress implements android.os.Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.mType);
         dest.writeString(this.mLabel);
+        dest.writeString(this.mFormattedAddress);
         dest.writeString(this.mStreet);
         dest.writeString(this.mPobox);
         dest.writeString(this.mNeighborhood);
@@ -126,6 +136,7 @@ public class PostalAddress implements android.os.Parcelable {
     protected PostalAddress(Parcel in) {
         this.mType = in.readInt();
         this.mLabel = in.readString();
+        this.mFormattedAddress = in.readString();
         this.mStreet = in.readString();
         this.mPobox = in.readString();
         this.mNeighborhood = in.readString();
