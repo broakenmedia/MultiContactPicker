@@ -131,30 +131,8 @@ public class PostalAddress implements android.os.Parcelable {
         if (mLabel != null ? !mLabel.equals(address.mLabel) : address.mLabel != null) {
             return false;
         }
-        if (mFormattedAddress != null ? !mFormattedAddress.equals(address.mFormattedAddress)
-            : address.mFormattedAddress != null) {
-            return false;
-        }
-        if (mStreet != null ? !mStreet.equals(address.mStreet) : address.mStreet != null) {
-            return false;
-        }
-        if (mPobox != null ? !mPobox.equals(address.mPobox) : address.mPobox != null) {
-            return false;
-        }
-        if (mNeighborhood != null ? !mNeighborhood.equals(address.mNeighborhood)
-            : address.mNeighborhood != null) {
-            return false;
-        }
-        if (mCity != null ? !mCity.equals(address.mCity) : address.mCity != null) {
-            return false;
-        }
-        if (mRegion != null ? !mRegion.equals(address.mRegion) : address.mRegion != null) {
-            return false;
-        }
-        if (mPostcode != null ? !mPostcode.equals(address.mPostcode) : address.mPostcode != null) {
-            return false;
-        }
-        return mCountry != null ? mCountry.equals(address.mCountry) : address.mCountry == null;
+        return mFormattedAddress != null ? mFormattedAddress.equals(address.mFormattedAddress)
+            : address.mFormattedAddress == null;
 
     }
 
@@ -163,13 +141,6 @@ public class PostalAddress implements android.os.Parcelable {
         int result = mType;
         result = 31 * result + (mLabel != null ? mLabel.hashCode() : 0);
         result = 31 * result + (mFormattedAddress != null ? mFormattedAddress.hashCode() : 0);
-        result = 31 * result + (mStreet != null ? mStreet.hashCode() : 0);
-        result = 31 * result + (mPobox != null ? mPobox.hashCode() : 0);
-        result = 31 * result + (mNeighborhood != null ? mNeighborhood.hashCode() : 0);
-        result = 31 * result + (mCity != null ? mCity.hashCode() : 0);
-        result = 31 * result + (mRegion != null ? mRegion.hashCode() : 0);
-        result = 31 * result + (mPostcode != null ? mPostcode.hashCode() : 0);
-        result = 31 * result + (mCountry != null ? mCountry.hashCode() : 0);
         return result;
     }
 
@@ -216,4 +187,20 @@ public class PostalAddress implements android.os.Parcelable {
         return new PostalAddress[size];
       }
     };
+
+    @Override
+    public String toString() {
+        return "PostalAddress{" +
+            "type=" + getType() +
+            ", label='" + getLabel() + '\'' +
+            ", street='" + getStreet() + '\'' +
+            ", pobox='" + getPobox() + '\'' +
+            ", neighborhood='" + getNeighborhood() + '\'' +
+            ", city='" + getCity() + '\'' +
+            ", region='" + getRegion() + '\'' +
+            ", postcode='" + getPostcode() + '\'' +
+            ", country='" + getCountry() + '\'' +
+            ", formattedAddress='" + getFormattedAddress() + '\'' +
+            '}';
+    }
 }
