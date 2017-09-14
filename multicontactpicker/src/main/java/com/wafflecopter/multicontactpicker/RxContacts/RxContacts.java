@@ -122,7 +122,7 @@ public class RxContacts {
                     int emailDataColumnIndex = emailCursor.getColumnIndex(Email.DATA);
                     while (!emailCursor.isAfterLast()) {
                         ColumnMapper.mapEmail(
-                            cursor,
+                            emailCursor,
                             contact,
                             emailTypeIndex,
                             emailLabelIndex,
@@ -145,7 +145,7 @@ public class RxContacts {
 
                         while (!phoneCursor.isAfterLast()) {
                             ColumnMapper.mapPhoneNumber(
-                                cursor,
+                                phoneCursor,
                                 contact,
                                 phoneNumberTypeIndex,
                                 phoneNumberLabelIndex,
