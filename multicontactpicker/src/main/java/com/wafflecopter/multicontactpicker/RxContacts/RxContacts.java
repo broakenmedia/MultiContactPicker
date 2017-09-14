@@ -51,6 +51,18 @@ public class RxContacts {
             HAS_PHONE_NUMBER
     };
 
+    private static final String[] EMAIL_PROJECTION = new String[] {
+        Email.TYPE,
+        Email.LABEL,
+        Email.DATA
+    };
+
+    private static final String[] PHONE_PROJECTION = new String[] {
+        Phone.TYPE,
+        Phone.LABEL,
+        Phone.NUMBER
+    };
+
     private static final String[] ADDRESS_PROJECTION = new String[] {
         StructuredPostal.TYPE,
             StructuredPostal.LABEL,
@@ -101,13 +113,14 @@ public class RxContacts {
                 ColumnMapper.mapPhoto(cursor, contact, photoColumnIndex);
                 ColumnMapper.mapThumbnail(cursor, contact, thumbnailColumnIndex);
 
-                Cursor emailCursor = mResolver.query(EMAIL_CONTENT_URI, null,
+                Cursor emailCursor = mResolver.query(EMAIL_CONTENT_URI, EMAIL_PROJECTION,
                         ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{String.valueOf(id)}, null);
                 if(emailCursor != null) {
+                    emailCursor.moveToFirst();
                     int emailTypeIndex = emailCursor.getColumnIndex(Email.TYPE);
                     int emailLabelIndex = emailCursor.getColumnIndex(Email.LABEL);
                     int emailDataColumnIndex = emailCursor.getColumnIndex(Email.DATA);
-                    while (emailCursor.moveToNext()) {
+                    while (!emailCursor.isAfterLast()) {
                         ColumnMapper.mapPhoneNumber(
                             cursor,
                             contact,
@@ -121,14 +134,15 @@ public class RxContacts {
 
                 int hasPhoneNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(HAS_PHONE_NUMBER)));
                 if (hasPhoneNumber > 0) {
-                    Cursor phoneCursor = mResolver.query(PHONE_CONTENT_URI, null,
+                    Cursor phoneCursor = mResolver.query(PHONE_CONTENT_URI, PHONE_PROJECTION,
                             ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{String.valueOf(id)}, null);
                     if(phoneCursor != null) {
+                        phoneCursor.moveToFirst();
                         int phoneNumberColumnIndex = phoneCursor.getColumnIndex(Phone.NUMBER);
                         int phoneNumberTypeIndex = phoneCursor.getColumnIndex(Phone.TYPE);
                         int phoneNumberLabelIndex = phoneCursor.getColumnIndex(Phone.LABEL);
 
-                        while (phoneCursor.moveToNext()) {
+                        while (!phoneCursor.isAfterLast()) {
                             ColumnMapper.mapPhoneNumber(
                                 cursor,
                                 contact,
@@ -182,9 +196,10 @@ public class RxContacts {
             cursor.moveToNext();
         }
         cursor.close();
-        for (int i = 0; i < contacts.size(); i++)
+        for (int i = 0; i < contacts.size(); i++) {
             //noinspection unchecked
             emitter.onNext(contacts.valueAt(i));
+        }
         emitter.onComplete();
     }
 
