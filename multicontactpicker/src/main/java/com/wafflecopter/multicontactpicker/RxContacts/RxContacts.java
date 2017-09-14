@@ -121,13 +121,14 @@ public class RxContacts {
                     int emailLabelIndex = emailCursor.getColumnIndex(Email.LABEL);
                     int emailDataColumnIndex = emailCursor.getColumnIndex(Email.DATA);
                     while (!emailCursor.isAfterLast()) {
-                        ColumnMapper.mapPhoneNumber(
+                        ColumnMapper.mapEmail(
                             cursor,
                             contact,
                             emailTypeIndex,
                             emailLabelIndex,
                             emailDataColumnIndex
                         );
+                        emailCursor.moveToNext();
                     }
                     emailCursor.close();
                 }
@@ -150,6 +151,7 @@ public class RxContacts {
                                 phoneNumberLabelIndex,
                                 phoneNumberColumnIndex
                             );
+                            phoneCursor.moveToNext();
                         }
                         phoneCursor.close();
                     }
@@ -163,6 +165,7 @@ public class RxContacts {
                 );
 
                 if (addressCursor != null) {
+                    addressCursor.moveToFirst();
                     int typeIndex = addressCursor.getColumnIndex(StructuredPostal.TYPE);
                     int labelIndex = addressCursor.getColumnIndex(StructuredPostal.LABEL);
                     int formattedAddressIndex = addressCursor.getColumnIndex(StructuredPostal.FORMATTED_ADDRESS);
@@ -174,7 +177,7 @@ public class RxContacts {
                     int postCodeIndex = addressCursor.getColumnIndex(StructuredPostal.POSTCODE);
                     int countryIndex = addressCursor.getColumnIndex(StructuredPostal.COUNTRY);
 
-                    while (addressCursor.moveToNext()) {
+                    while (!addressCursor.isAfterLast()) {
                         contact.getAddresses().add(new PostalAddress(
                             addressCursor.getInt(typeIndex),
                             addressCursor.getString(labelIndex),
@@ -187,6 +190,7 @@ public class RxContacts {
                             addressCursor.getString(postCodeIndex),
                             addressCursor.getString(countryIndex)
                         ));
+                        addressCursor.moveToNext();
                     }
                     addressCursor.close();
                 }
