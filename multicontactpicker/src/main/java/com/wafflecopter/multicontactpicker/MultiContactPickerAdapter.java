@@ -2,6 +2,7 @@ package com.wafflecopter.multicontactpicker;
 
 import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     MultiContactPickerAdapter(List<ContactResult> contactItemList, ContactSelectListener listener) {
+        Log.e("MultiContactPicker",String.valueOf(contactItemList.size()));
         this.contactItemList = contactItemList;
         this.contactItemListOriginal = contactItemList;
         this.listener = listener;
@@ -54,7 +56,7 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 String displayName = contactItem.getDisplayName().replaceAll("\\s+", "");
                 if (!phoneNumber.equals(displayName)) {
                     contactViewHolder.tvNumber.setVisibility(View.VISIBLE);
-                    contactViewHolder.tvNumber.setText(String.valueOf(contactItem.getPhoneNumbers().get(0)));
+                    contactViewHolder.tvNumber.setText(phoneNumber);
                 } else {
                     contactViewHolder.tvNumber.setVisibility(View.GONE);
                 }
@@ -64,7 +66,7 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     String displayName = contactItem.getDisplayName().replaceAll("\\s+", "");
                     if (!email.equals(displayName)) {
                         contactViewHolder.tvNumber.setVisibility(View.VISIBLE);
-                        contactViewHolder.tvNumber.setText(String.valueOf(contactItem.getEmails().get(0)));
+                        contactViewHolder.tvNumber.setText(email);
                     } else {
                         contactViewHolder.tvNumber.setVisibility(View.GONE);
                     }
