@@ -1,6 +1,8 @@
 package com.wafflecopter.multicontactpicker;
 
+import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.l4digital.fastscroll.FastScroller;
-import com.wafflecopter.multicontactpicker.RxContacts.Contact;
+import com.wafflecopter.multicontactpicker.RxContacts.ContactResult;
 import com.wafflecopter.multicontactpicker.Views.RoundLetterView;
 
 import java.util.ArrayList;
@@ -18,16 +20,17 @@ import java.util.List;
 
 class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements FastScroller.SectionIndexer, Filterable {
 
-    private List<Contact> contactItemList;
-    private List<Contact> contactItemListOriginal;
+    private List<ContactResult> contactItemList;
+    private List<ContactResult> contactItemListOriginal;
     private ContactSelectListener listener;
 
 
     interface ContactSelectListener{
-        void onContactSelected(Contact contact, int totalSelectedContacts);
+        void onContactSelected(ContactResult contact, int totalSelectedContacts);
     }
 
-    MultiContactPickerAdapter(List<Contact> contactItemList, ContactSelectListener listener) {
+    MultiContactPickerAdapter(List<ContactResult> contactItemList, ContactSelectListener listener) {
+        Log.e("MultiContactPicker",String.valueOf(contactItemList.size()));
         this.contactItemList = contactItemList;
         this.contactItemListOriginal = contactItemList;
         this.listener = listener;
@@ -40,30 +43,30 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int i) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, @SuppressLint("RecyclerView") final int i) {
         if(holder instanceof ContactViewHolder) {
             ContactViewHolder contactViewHolder = (ContactViewHolder) holder;
-            final Contact contactItem = getItem(i);
+            final ContactResult contactItem = getItem(i);
             contactViewHolder.tvContactName.setText(contactItem.getDisplayName());
             contactViewHolder.vRoundLetterView.setTitleText(String.valueOf(contactItem.getDisplayName().charAt(0)));
             contactViewHolder.vRoundLetterView.setBackgroundColor(contactItem.getBackgroundColor());
 
             if (contactItem.getPhoneNumbers().size() > 0) {
-                String phoneNumber = contactItem.getPhoneNumbers().get(0).replaceAll("\\s+", "");
+                String phoneNumber = contactItem.getPhoneNumbers().get(0).getValue().replaceAll("\\s+", "");
                 String displayName = contactItem.getDisplayName().replaceAll("\\s+", "");
                 if (!phoneNumber.equals(displayName)) {
                     contactViewHolder.tvNumber.setVisibility(View.VISIBLE);
-                    contactViewHolder.tvNumber.setText(String.valueOf(contactItem.getPhoneNumbers().get(0)));
+                    contactViewHolder.tvNumber.setText(phoneNumber);
                 } else {
                     contactViewHolder.tvNumber.setVisibility(View.GONE);
                 }
             } else {
                 if (contactItem.getEmails().size() > 0) {
-                    String email = contactItem.getEmails().get(0).replaceAll("\\s+", "");
+                    String email = contactItem.getEmails().get(0).getValue().replaceAll("\\s+", "");
                     String displayName = contactItem.getDisplayName().replaceAll("\\s+", "");
                     if (!email.equals(displayName)) {
                         contactViewHolder.tvNumber.setVisibility(View.VISIBLE);
-                        contactViewHolder.tvNumber.setText(String.valueOf(contactItem.getEmails().get(0)));
+                        contactViewHolder.tvNumber.setText(email);
                     } else {
                         contactViewHolder.tvNumber.setVisibility(View.GONE);
                     }
@@ -96,9 +99,9 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         contactItemList.get(pos).setSelected(!contactItemList.get(pos).isSelected());
     }
 
-    private int getItemPosition(List<Contact> list, long mid){
+    private int getItemPosition(List<ContactResult> list, long mid){
         int i = 0;
-        for(Contact contact : list){
+        for(ContactResult contact : list){
             if(contact.getId() == mid){
                 return i;
             }
@@ -111,9 +114,9 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return getSelectedContacts().size();
     }
 
-    List<Contact> getSelectedContacts(){
-        List<Contact> selectedContacts = new ArrayList<>();
-        for(Contact contact : contactItemListOriginal){
+    ArrayList<ContactResult> getSelectedContacts(){
+        ArrayList<ContactResult> selectedContacts = new ArrayList<>();
+        for(ContactResult contact : contactItemListOriginal){
             if(contact.isSelected()){
                 selectedContacts.add(contact);
             }
@@ -126,7 +129,7 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return (null != contactItemList ? contactItemList.size() : 0);
     }
 
-    private Contact getItem(int pos){
+    private ContactResult getItem(int pos){
         return contactItemList.get(pos);
     }
 
@@ -162,13 +165,13 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             @SuppressWarnings("unchecked")
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                contactItemList = (List<Contact>) results.values;
+                contactItemList = (List<ContactResult>) results.values;
                 notifyDataSetChanged();
             }
 
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                List<Contact> filteredResults = null;
+                @SuppressWarnings("UnusedAssignment") List<ContactResult> filteredResults = null;
                 if (constraint.length() == 0) {
                     filteredResults = contactItemListOriginal;
                 } else {
@@ -181,9 +184,9 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         };
     }
 
-    private List<Contact> getFilteredResults(String constraint) {
-        List<Contact> results = new ArrayList<>();
-        for (Contact item : contactItemListOriginal) {
+    private List<ContactResult> getFilteredResults(String constraint) {
+        List<ContactResult> results = new ArrayList<>();
+        for (ContactResult item : contactItemListOriginal) {
             if (item.getDisplayName().toLowerCase().contains(constraint)) {
                 results.add(item);
             }

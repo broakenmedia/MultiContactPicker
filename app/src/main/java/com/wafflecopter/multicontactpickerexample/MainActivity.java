@@ -12,8 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.wafflecopter.multicontactpicker.ContactResult;
 import com.wafflecopter.multicontactpicker.MultiContactPicker;
+import com.wafflecopter.multicontactpicker.RxContacts.ContactResult;
 
 import java.util.List;
 

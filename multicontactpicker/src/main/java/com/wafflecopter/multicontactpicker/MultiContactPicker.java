@@ -7,7 +7,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 
-import com.wafflecopter.multicontactpicker.RxContacts.Contact;
+import com.wafflecopter.multicontactpicker.RxContacts.ContactResult;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ import java.util.List;
 
 public class MultiContactPicker {
 
+    @SuppressWarnings("WeakerAccess")
     public static class Builder implements Serializable {
 
         protected transient Activity acc;
@@ -89,14 +90,6 @@ public class MultiContactPicker {
                 acc.startActivityForResult(intent, requestCode);
             }
         }
-    }
-
-    static ArrayList<ContactResult> buildResult(List<Contact> selectedContacts){
-        ArrayList<ContactResult> contactResults = new ArrayList<>();
-        for(Contact contact : selectedContacts){
-            contactResults.add(new ContactResult(contact));
-        }
-        return contactResults;
     }
 
     @SuppressWarnings("unchecked")
