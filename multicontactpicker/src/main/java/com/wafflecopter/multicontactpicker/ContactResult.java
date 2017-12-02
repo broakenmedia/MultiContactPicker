@@ -9,6 +9,7 @@ import com.wafflecopter.multicontactpicker.RxContacts.Contact;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings({"unused", "WeakerAccess"})
 public class ContactResult implements Parcelable {
 
     private String mDisplayName;
@@ -42,7 +43,6 @@ public class ContactResult implements Parcelable {
         return mPhoneNumbers;
     }
 
-
     public ContactResult(Contact contact){
         this.mDisplayName = contact.getDisplayName();
         this.mStarred = contact.isStarred();
@@ -53,22 +53,12 @@ public class ContactResult implements Parcelable {
     }
 
     protected ContactResult(Parcel in) {
-        mDisplayName = in.readString();
-        mStarred = in.readByte() != 0x00;
-        mPhoto = (Uri) in.readValue(Uri.class.getClassLoader());
-        mThumbnail = (Uri) in.readValue(Uri.class.getClassLoader());
-        if (in.readByte() == 0x01) {
-            mEmails = new ArrayList<>();
-            in.readList(mEmails, String.class.getClassLoader());
-        } else {
-            mEmails = null;
-        }
-        if (in.readByte() == 0x01) {
-            mPhoneNumbers = new ArrayList<>();
-            in.readList(mPhoneNumbers, String.class.getClassLoader());
-        } else {
-            mPhoneNumbers = null;
-        }
+        this.mDisplayName = in.readString();
+        this.mStarred = in.readByte() != 0;
+        this.mPhoto = in.readParcelable(Uri.class.getClassLoader());
+        this.mThumbnail = in.readParcelable(Uri.class.getClassLoader());
+        this.mEmails = in.createStringArrayList();
+        this.mPhoneNumbers = in.createStringArrayList();
     }
 
     @Override
@@ -78,22 +68,12 @@ public class ContactResult implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mDisplayName);
-        dest.writeByte((byte) (mStarred ? 0x01 : 0x00));
-        dest.writeValue(mPhoto);
-        dest.writeValue(mThumbnail);
-        if (mEmails == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(mEmails);
-        }
-        if (mPhoneNumbers == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(mPhoneNumbers);
-        }
+        dest.writeString(this.mDisplayName);
+        dest.writeByte(this.mStarred ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.mPhoto, flags);
+        dest.writeParcelable(this.mThumbnail, flags);
+        dest.writeStringList(this.mEmails);
+        dest.writeStringList(this.mPhoneNumbers);
     }
 
     @SuppressWarnings("unused")

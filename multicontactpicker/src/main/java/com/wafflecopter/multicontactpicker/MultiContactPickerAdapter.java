@@ -1,6 +1,12 @@
 package com.wafflecopter.multicontactpicker;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.TextAppearanceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +27,7 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private List<Contact> contactItemList;
     private List<Contact> contactItemListOriginal;
     private ContactSelectListener listener;
-
+    private String currentFilterQuery;
 
     interface ContactSelectListener{
         void onContactSelected(Contact contact, int totalSelectedContacts);
@@ -53,7 +59,7 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 String displayName = contactItem.getDisplayName().replaceAll("\\s+", "");
                 if (!phoneNumber.equals(displayName)) {
                     contactViewHolder.tvNumber.setVisibility(View.VISIBLE);
-                    contactViewHolder.tvNumber.setText(String.valueOf(contactItem.getPhoneNumbers().get(0)));
+                    contactViewHolder.tvNumber.setText(phoneNumber);
                 } else {
                     contactViewHolder.tvNumber.setVisibility(View.GONE);
                 }
@@ -63,7 +69,7 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     String displayName = contactItem.getDisplayName().replaceAll("\\s+", "");
                     if (!email.equals(displayName)) {
                         contactViewHolder.tvNumber.setVisibility(View.VISIBLE);
-                        contactViewHolder.tvNumber.setText(String.valueOf(contactItem.getEmails().get(0)));
+                        contactViewHolder.tvNumber.setText(email);
                     } else {
                         contactViewHolder.tvNumber.setVisibility(View.GONE);
                     }
@@ -71,6 +77,8 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     contactViewHolder.tvNumber.setVisibility(View.GONE);
                 }
             }
+
+            highlightTerm(contactViewHolder.tvContactName, currentFilterQuery, contactViewHolder.tvContactName.getText().toString());
 
             if (contactItem.isSelected()) {
                 contactViewHolder.ivSelectedState.setVisibility(View.VISIBLE);
@@ -88,6 +96,27 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     }
                 }
             });
+
+
+
+        }
+    }
+
+    private void highlightTerm(TextView tv, String query, String originalString){
+        if (query != null && !query.isEmpty()) {
+            int startPos = originalString.toLowerCase().indexOf(query.toLowerCase());
+            int endPos = startPos + query.length();
+            if (startPos != -1) {
+                Spannable spannable = new SpannableString(originalString);
+                ColorStateList blackColor = new ColorStateList(new int[][]{new int[]{}}, new int[]{Color.BLACK});
+                TextAppearanceSpan highlightSpan = new TextAppearanceSpan(null, Typeface.BOLD, -1, blackColor, null);
+                spannable.setSpan(highlightSpan, startPos, endPos, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                tv.setText(spannable);
+            } else {
+                tv.setText(originalString);
+            }
+        } else {
+            tv.setText(originalString);
         }
     }
 
@@ -156,6 +185,11 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
+    public void filterOnText(String query){
+        this.currentFilterQuery = query;
+        getFilter().filter(currentFilterQuery);
+    }
+
     @Override
     public Filter getFilter() {
         return new Filter() {
@@ -171,6 +205,7 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 List<Contact> filteredResults = null;
                 if (constraint.length() == 0) {
                     filteredResults = contactItemListOriginal;
+                    currentFilterQuery = null;
                 } else {
                     filteredResults = getFilteredResults(constraint.toString().toLowerCase());
                 }

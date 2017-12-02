@@ -28,7 +28,7 @@ Add this to your module build.gradle
 
 ``` gradle
 dependencies {
-    compile 'com.github.broakenmedia:MultiContactPicker:1.5'
+    compile 'com.github.broakenmedia:MultiContactPicker:1.6'
 }
 ```
 ### Usage
@@ -82,6 +82,17 @@ MultiContactPicker has a default theme called Azure (Screenshot), however you ca
 ```
 
 This can then be set in the builder above using **.theme(int)**
+
+### Changelog
+
+```
+1.6
+---
+- Contacts are now shown asynchronously as they load
+- Search results now highlight the query text similar to the default contacts app
+- Menu file renamed to prevent conflicts
+- Various performance enhancements and bug fixes
+```
 
 ### Thanks
 MultiContactPicker utilises code from these great libraries:

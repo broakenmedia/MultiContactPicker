@@ -19,10 +19,11 @@ import com.wafflecopter.multicontactpicker.RxContacts.Contact;
 import com.wafflecopter.multicontactpicker.RxContacts.RxContacts;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import io.reactivex.SingleObserver;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Predicate;
@@ -126,43 +127,53 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
     private void loadContacts(){
         progressBar.setVisibility(View.VISIBLE);
         RxContacts.fetch(this)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .filter(new Predicate<Contact>() {
                     @Override
                     public boolean test(Contact contact) throws Exception {
                         return contact.getDisplayName() != null;
                     }
                 })
-                .toSortedList(new Comparator<Contact>() {
+                .subscribe(new Observer<Contact>() {
                     @Override
-                    public int compare(Contact contact, Contact t1) {
-                        return contact.getDisplayName().compareToIgnoreCase(t1.getDisplayName());
+                    public void onSubscribe(Disposable d) {
+
                     }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new SingleObserver<List<Contact>>() {
                     @Override
-                    public void onSubscribe(Disposable d) {}
-                    @Override
-                    public void onSuccess(List<Contact> contacts) {
-                        contactList.clear();
-                        contactList.addAll(contacts);
-                        if(adapter != null && contacts.size() > 0){
+                    public void onNext(Contact value) {
+                        contactList.add(value);
+                        Collections.sort(contactList, new Comparator<Contact>() {
+                            @Override
+                            public int compare(Contact contact, Contact t1) {
+                                return contact.getDisplayName().compareToIgnoreCase(t1.getDisplayName());
+                            }
+                        });
+                        if(adapter != null){
                             adapter.notifyDataSetChanged();
                         }
                         progressBar.setVisibility(View.GONE);
                     }
+
                     @Override
                     public void onError(Throwable e) {
                         progressBar.setVisibility(View.GONE);
                         e.printStackTrace();
                     }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
                 });
+
+
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.mcp_menu_main, menu);
         searchMenuItem = menu.findItem(R.id.mcp_action_search);
         setSearchIconColor(searchMenuItem, builder.searchIconColor);
         searchView.setMenuItem(searchMenuItem);
@@ -183,7 +194,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
     @Override
     public boolean onQueryTextSubmit(String query) {
         if(adapter != null){
-            adapter.getFilter().filter(query);
+            adapter.filterOnText(query);
         }
         return false;
     }
@@ -191,7 +202,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
     @Override
     public boolean onQueryTextChange(String newText) {
         if(adapter != null){
-            adapter.getFilter().filter(newText);
+            adapter.filterOnText(newText);
         }
         return false;
     }

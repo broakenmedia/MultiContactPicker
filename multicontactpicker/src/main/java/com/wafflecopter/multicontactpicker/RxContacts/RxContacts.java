@@ -32,15 +32,15 @@ import io.reactivex.ObservableOnSubscribe;
 
 public class RxContacts {
 
-    private final String DISPLAY_NAME = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
+    private static final String DISPLAY_NAME = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
             ContactsContract.Contacts.DISPLAY_NAME_PRIMARY : ContactsContract.Contacts.DISPLAY_NAME;
 
-    private Uri PHONE_CONTENT_URI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-    private Uri EMAIL_CONTENT_URI = ContactsContract.CommonDataKinds.Email.CONTENT_URI;
+    private static final Uri PHONE_CONTENT_URI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+    private static final Uri EMAIL_CONTENT_URI = ContactsContract.CommonDataKinds.Email.CONTENT_URI;
 
-    private String HAS_PHONE_NUMBER = ContactsContract.Contacts.HAS_PHONE_NUMBER;
+    private static final String HAS_PHONE_NUMBER = ContactsContract.Contacts.HAS_PHONE_NUMBER;
 
-    private final String[] PROJECTION = {
+    private static final String[] PROJECTION = {
             ContactsContract.Contacts._ID,
             ContactsContract.Contacts.IN_VISIBLE_GROUP,
             DISPLAY_NAME,
@@ -50,6 +50,19 @@ public class RxContacts {
             HAS_PHONE_NUMBER
 
     };
+
+    private static final String[] EMAIL_PROJECTION = {
+            ContactsContract.CommonDataKinds.Email.CONTACT_ID,
+            ContactsContract.CommonDataKinds.Email.DATA
+    };
+
+    private static final String[] NUMBER_PROJECTION = {
+            ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
+            ContactsContract.CommonDataKinds.Phone.NUMBER
+    };
+
+
+
 
     private ContentResolver mResolver;
 
@@ -88,24 +101,33 @@ public class RxContacts {
                 ColumnMapper.mapPhoto(cursor, contact, photoColumnIndex);
                 ColumnMapper.mapThumbnail(cursor, contact, thumbnailColumnIndex);
 
-                Cursor emailCursor = mResolver.query(EMAIL_CONTENT_URI, null,
+
+
+                Cursor emailCursor = mResolver.query(EMAIL_CONTENT_URI, EMAIL_PROJECTION,
                         ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{String.valueOf(id)}, null);
+
                 if(emailCursor != null) {
+                    emailCursor.moveToFirst();
                     int emailDataColumnIndex = emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA);
-                    while (emailCursor.moveToNext()) {
+                    while (!emailCursor.isAfterLast()) {
                         ColumnMapper.mapEmail(emailCursor, contact, emailDataColumnIndex);
+                        emailCursor.moveToNext();
                     }
                     emailCursor.close();
                 }
 
+
                 int hasPhoneNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(HAS_PHONE_NUMBER)));
                 if (hasPhoneNumber > 0) {
-                    Cursor phoneCursor = mResolver.query(PHONE_CONTENT_URI, null,
+
+                    Cursor phoneCursor = mResolver.query(PHONE_CONTENT_URI, NUMBER_PROJECTION,
                             ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{String.valueOf(id)}, null);
-                    if(phoneCursor != null) {
+                    if (phoneCursor != null) {
+                        phoneCursor.moveToFirst();
                         int phoneNumberColumnIndex = phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
-                        while (phoneCursor.moveToNext()) {
+                        while (!phoneCursor.isAfterLast()) {
                             ColumnMapper.mapPhoneNumber(phoneCursor, contact, phoneNumberColumnIndex);
+                            phoneCursor.moveToNext();
                         }
                         phoneCursor.close();
                     }
@@ -114,10 +136,14 @@ public class RxContacts {
                 contacts.put(id, contact);
             }
             cursor.moveToNext();
+            //noinspection unchecked
+            emitter.onNext(contact);
         }
         cursor.close();
-        for (int i = 0; i < contacts.size(); i++)
+        /*for (int i = 0; i < contacts.size(); i++) {
+            //noinspection unchecked
             emitter.onNext(contacts.valueAt(i));
+        }*/
         emitter.onComplete();
     }
 

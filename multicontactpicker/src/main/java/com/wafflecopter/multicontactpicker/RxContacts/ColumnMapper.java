@@ -37,7 +37,7 @@ class ColumnMapper {
 
     static void mapEmail (Cursor cursor, Contact contact, int columnIndex) {
         String email = cursor.getString(columnIndex);
-        if (email != null && !email.isEmpty()) {
+        if (email != null && !email.trim().isEmpty()) {
             contact.getEmails().add(email);
         }
     }
