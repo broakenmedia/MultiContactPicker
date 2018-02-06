@@ -20,6 +20,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final int CONTACT_PICKER_REQUEST = 991;
+    private boolean singleChoiseMode=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
                             .hideScrollbar(false) //Optional - default: false
                             .showTrack(true) //Optional - default: true
                             .searchIconColor(Color.WHITE) //Option - default: White
+                            .setSelectOnlyOneItem(singleChoiseMode) // Optional - default: false
+                            .showBackButton(true) // Optional - default: true
                             .handleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Azure Blue
                             .bubbleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Azure Blue
                             .bubbleTextColor(Color.WHITE) //Optional - default: White
@@ -54,10 +57,21 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == CONTACT_PICKER_REQUEST){
             if(resultCode == RESULT_OK) {
                 List<ContactResult> results = MultiContactPicker.obtainResult(data);
-                Log.d("MyTag", results.get(0).getDisplayName());
+                if (singleChoiseMode == true) {
+                    Log.d("MyTag", results.get(results.size() - 1).getDisplayName());
+                } else {
+                   // Log.d("MyTag", results.get(0).getDisplayName());
+                    printSelecteItemOnConsole(results);
+                }
             } else if(resultCode == RESULT_CANCELED){
                 System.out.println("User closed the picker without selecting items.");
             }
+        }
+    }
+
+    private void printSelecteItemOnConsole(List<ContactResult> results) {
+        for(ContactResult result : results) {
+            Log.d("MyTag", result.getDisplayName() + " -> " + result.getPhoneNumbers());
         }
     }
 }
