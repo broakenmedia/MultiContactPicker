@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.l4digital.fastscroll.FastScrollRecyclerView;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
@@ -28,19 +29,20 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
+import com.wafflecopter.multicontactpicker.R;
 
 public class MultiContactPickerActivity extends AppCompatActivity implements MaterialSearchView.OnQueryTextListener {
 
     public static final String EXTRA_RESULT_SELECTION = "extra_result_selection";
     private FastScrollRecyclerView recyclerView;
     private List<Contact> contactList = new ArrayList<>();
-    private TextView tvSelectBtn;
     private MultiContactPickerAdapter adapter;
     private Toolbar toolbar;
     private MaterialSearchView searchView;
     private ProgressBar progressBar;
-    private MenuItem searchMenuItem;
+    private MenuItem searchMenuItem, selectMenuItem, doneMenuItem;
     private MultiContactPicker.Builder builder;
+    private boolean isAllSelected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,6 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        tvSelectBtn = (TextView) findViewById(R.id.tvSelect);
         recyclerView = (FastScrollRecyclerView) findViewById(R.id.recyclerView);
 
         initialiseUI(builder);
@@ -73,11 +74,21 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         adapter = new MultiContactPickerAdapter(contactList, new MultiContactPickerAdapter.ContactSelectListener() {
             @Override
             public void onContactSelected(Contact contact, int totalSelectedContacts) {
-                tvSelectBtn.setEnabled(totalSelectedContacts > 0);
+                doneMenuItem.setVisible(totalSelectedContacts > 0);
                 if(totalSelectedContacts > 0) {
-                    tvSelectBtn.setText(getString(R.string.tv_select_btn_text_enabled, String.valueOf(totalSelectedContacts)));
+                    toolbar.setTitle(String.valueOf(totalSelectedContacts));
                 } else {
-                    tvSelectBtn.setText(getString(R.string.tv_select_btn_text_disabled));
+                    toolbar.setTitle(getString(R.string.picker_title));
+                }
+            }
+
+            @Override
+            public void onAllContactSelected(boolean isSelected, int totalSelectedContacts) {
+                doneMenuItem.setVisible(isSelected);
+                if(isSelected) {
+                    toolbar.setTitle(String.valueOf(totalSelectedContacts));
+                } else {
+                    toolbar.setTitle(getString(R.string.picker_title));
                 }
             }
         });
@@ -85,17 +96,6 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         loadContacts();
 
         recyclerView.setAdapter(adapter);
-
-        tvSelectBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent result = new Intent();
-                result.putExtra(EXTRA_RESULT_SELECTION, MultiContactPicker.buildResult(adapter.getSelectedContacts()));
-                setResult(RESULT_OK, result);
-                finish();
-            }
-        });
-
     }
 
     private void initialiseUI(MultiContactPicker.Builder builder){
@@ -111,17 +111,6 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
             recyclerView.setTrackColor(builder.trackColor);
         recyclerView.setHideScrollbar(builder.hideScrollbar);
         recyclerView.setTrackVisible(builder.showTrack);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                setResult(RESULT_CANCELED);
-                finish();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void loadContacts(){
@@ -167,17 +156,45 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
                     }
                 });
 
-
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.mcp_menu_main, menu);
         searchMenuItem = menu.findItem(R.id.mcp_action_search);
+        selectMenuItem = menu.findItem(R.id.mcp_action_select);
+        doneMenuItem = menu.findItem(R.id.mcp_action_done);
         setSearchIconColor(searchMenuItem, builder.searchIconColor);
         searchView.setMenuItem(searchMenuItem);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if(id==android.R.id.home) {
+            setResult(RESULT_CANCELED);
+            finish();
+        }
+        else if(id==R.id.mcp_action_select) {
+            if(!isAllSelected) {
+                adapter.setAllContactSelected(isAllSelected = true);
+                selectMenuItem.setIcon(R.drawable.ic_check_box_24dp);
+            }
+            else {
+                adapter.setAllContactSelected(isAllSelected = false);
+                selectMenuItem.setIcon(R.drawable.ic_check_box_outline_blank_24dp);
+            }
+        }
+        else if(id==R.id.mcp_action_done) {
+            Intent result = new Intent();
+            result.putExtra(EXTRA_RESULT_SELECTION, MultiContactPicker.buildResult(adapter.getSelectedContacts()));
+            setResult(RESULT_OK, result);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setSearchIconColor(MenuItem menuItem, final Integer color) {
