@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,6 +21,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final int CONTACT_PICKER_REQUEST = 991;
+    private static final int READ_CONTACTS_REQUEST = 123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,11 @@ public class MainActivity extends AppCompatActivity {
                             .bubbleTextColor(Color.WHITE) //Optional - default: White
                             .showPickerForResult(CONTACT_PICKER_REQUEST);
                 }else{
-                    Toast.makeText(MainActivity.this, "Remember to go into settings and enable the contacts permission.", Toast.LENGTH_LONG).show();
+
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_CONTACTS},
+                            READ_CONTACTS_REQUEST);
+
+                    //Toast.makeText(MainActivity.this, "Remember to go into settings and enable the contacts permission.", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -51,13 +57,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CONTACT_PICKER_REQUEST){
+        if(resultCode == RESULT_OK && requestCode == CONTACT_PICKER_REQUEST){
             if(resultCode == RESULT_OK) {
                 List<ContactResult> results = MultiContactPicker.obtainResult(data);
                 Log.d("MyTag", results.get(0).getDisplayName());
             } else if(resultCode == RESULT_CANCELED){
                 System.out.println("User closed the picker without selecting items.");
             }
+        }
+
+        if(resultCode == RESULT_OK && requestCode == READ_CONTACTS_REQUEST) {
+            Toast.makeText(MainActivity.this, "granted", Toast.LENGTH_LONG).show();
         }
     }
 }
