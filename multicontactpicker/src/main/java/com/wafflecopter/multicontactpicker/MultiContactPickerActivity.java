@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -35,12 +36,14 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
     private FastScrollRecyclerView recyclerView;
     private List<Contact> contactList = new ArrayList<>();
     private TextView tvSelectBtn;
+    private LinearLayout controlPanel;
     private MultiContactPickerAdapter adapter;
     private Toolbar toolbar;
     private MaterialSearchView searchView;
     private ProgressBar progressBar;
     private MenuItem searchMenuItem;
     private MultiContactPicker.Builder builder;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
+        controlPanel = (LinearLayout) findViewById(R.id.controlPanel);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         tvSelectBtn = (TextView) findViewById(R.id.tvSelect);
         recyclerView = (FastScrollRecyclerView) findViewById(R.id.recyclerView);
@@ -74,6 +78,9 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
             @Override
             public void onContactSelected(Contact contact, int totalSelectedContacts) {
                 tvSelectBtn.setEnabled(totalSelectedContacts > 0);
+                if(builder.selectionMode == MultiContactPicker.CHOICE_MODE_SINGLE){
+                    finishPicking();
+                }
                 if(totalSelectedContacts > 0) {
                     tvSelectBtn.setText(getString(R.string.tv_select_btn_text_enabled, String.valueOf(totalSelectedContacts)));
                 } else {
@@ -89,13 +96,17 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         tvSelectBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent result = new Intent();
-                result.putExtra(EXTRA_RESULT_SELECTION, MultiContactPicker.buildResult(adapter.getSelectedContacts()));
-                setResult(RESULT_OK, result);
-                finish();
+                finishPicking();
             }
         });
 
+    }
+
+    private void finishPicking(){
+        Intent result = new Intent();
+        result.putExtra(EXTRA_RESULT_SELECTION, MultiContactPicker.buildResult(adapter.getSelectedContacts()));
+        setResult(RESULT_OK, result);
+        finish();
     }
 
     private void initialiseUI(MultiContactPicker.Builder builder){
@@ -111,6 +122,11 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
             recyclerView.setTrackColor(builder.trackColor);
         recyclerView.setHideScrollbar(builder.hideScrollbar);
         recyclerView.setTrackVisible(builder.showTrack);
+        if(builder.selectionMode == MultiContactPicker.CHOICE_MODE_SINGLE){
+            controlPanel.setVisibility(View.GONE);
+        }else{
+            controlPanel.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

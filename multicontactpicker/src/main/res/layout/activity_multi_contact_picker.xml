@@ -37,7 +37,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/borderView">
+            android:layout_above="@+id/controlPanel">
 
             <com.l4digital.fastscroll.FastScrollRecyclerView
                 android:id="@+id/recyclerView"
@@ -62,12 +62,6 @@
                 android:visibility="visible"/>
         </FrameLayout>
 
-        <View
-            android:id="@+id/borderView"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_above="@+id/controlPanel"
-            android:background="@color/border_color"/>
 
         <LinearLayout
             android:id="@+id/controlPanel"
@@ -75,9 +69,15 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:gravity="right"
-            android:orientation="horizontal"
-            >
+            android:orientation="vertical"
+            android:visibility="visible">
 
+            <View
+                android:id="@+id/borderView"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="false"
+                android:background="@color/border_color"/>
 
             <TextView
                 android:id="@+id/tvSelect"

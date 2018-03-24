@@ -15,6 +15,9 @@ import java.util.List;
 
 public class MultiContactPicker {
 
+    public static final int CHOICE_MODE_MULTIPLE = 0;
+    public static final int CHOICE_MODE_SINGLE = 1;
+
     public static class Builder implements Serializable {
 
         protected transient Activity acc;
@@ -28,6 +31,9 @@ public class MultiContactPicker {
         protected Integer searchIconColor;
         protected boolean hideScrollbar;
         protected boolean showTrack = true;
+        protected int selectionMode = CHOICE_MODE_MULTIPLE;
+
+
 
         public Builder(@NonNull Activity act) {
             this.acc = act;
@@ -74,6 +80,11 @@ public class MultiContactPicker {
 
         public Builder showTrack(boolean showTrack) {
             this.showTrack = showTrack;
+            return this;
+        }
+
+        public Builder setChoiceMode(int selectionMode){
+            this.selectionMode = selectionMode;
             return this;
         }
 
