@@ -1,11 +1,11 @@
 package com.wafflecopter.multicontactpicker;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
+import android.support.v4.app.Fragment;
 
 import com.wafflecopter.multicontactpicker.RxContacts.Contact;
 
@@ -89,15 +89,18 @@ public class MultiContactPicker {
         }
 
         public void showPickerForResult(int requestCode) {
-            if (acc == null) {
-                return;
-            }
-            Intent intent = new Intent(acc, MultiContactPickerActivity.class);
-            intent.putExtra("builder", this);
-            if (frag != null) {
-                frag.startActivityForResult(intent, requestCode);
-            } else {
+            if (acc != null) {
+                Intent intent = new Intent(acc, MultiContactPickerActivity.class);
+                intent.putExtra("builder", this);
                 acc.startActivityForResult(intent, requestCode);
+            }else if(frag != null){
+                if(frag.getActivity() != null) {
+                    Intent intent = new Intent(frag.getActivity(), MultiContactPickerActivity.class);
+                    intent.putExtra("builder", this);
+                    frag.startActivityForResult(intent, requestCode);
+                }
+            }else{
+                throw new RuntimeException("Unable to find a context for intent. Is there a valid activity or fragment passed in the builder?");
             }
         }
     }

@@ -35,6 +35,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
     public static final String EXTRA_RESULT_SELECTION = "extra_result_selection";
     private FastScrollRecyclerView recyclerView;
     private List<Contact> contactList = new ArrayList<>();
+    private TextView tvSelectAll;
     private TextView tvSelectBtn;
     private LinearLayout controlPanel;
     private MultiContactPickerAdapter adapter;
@@ -43,7 +44,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
     private ProgressBar progressBar;
     private MenuItem searchMenuItem;
     private MultiContactPicker.Builder builder;
-
+    private boolean allSelected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         searchView = (MaterialSearchView) findViewById(R.id.search_view);
         controlPanel = (LinearLayout) findViewById(R.id.controlPanel);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        tvSelectAll = (TextView) findViewById(R.id.tvSelectAll);
         tvSelectBtn = (TextView) findViewById(R.id.tvSelect);
         recyclerView = (FastScrollRecyclerView) findViewById(R.id.recyclerView);
 
@@ -97,6 +99,19 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
             @Override
             public void onClick(View view) {
                 finishPicking();
+            }
+        });
+
+        tvSelectAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                allSelected = !allSelected;
+                if(adapter != null)
+                    adapter.setAllSelected(allSelected);
+                if(allSelected)
+                    tvSelectAll.setText(getString(R.string.tv_unselect_all_btn_text));
+                else
+                    tvSelectAll.setText(getString(R.string.tv_select_all_btn_text));
             }
         });
 
@@ -141,6 +156,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
     }
 
     private void loadContacts(){
+        tvSelectAll.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
         RxContacts.fetch(this)
                 .subscribeOn(Schedulers.newThread())
@@ -179,7 +195,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
 
                     @Override
                     public void onComplete() {
-
+                        tvSelectAll.setEnabled(true);
                     }
                 });
 

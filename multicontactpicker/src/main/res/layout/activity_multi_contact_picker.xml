@@ -79,23 +79,52 @@
                 android:layout_alignParentBottom="false"
                 android:background="@color/border_color"/>
 
-            <TextView
-                android:id="@+id/tvSelect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:background="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:enabled="false"
-                android:focusable="true"
-                android:gravity="center"
-                android:paddingBottom="15dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="15dp"
-                android:text="Select"
-                android:textColor="@color/selector_contact_select_text"
-                android:textSize="16sp"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvSelectAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_gravity="right"
+                    android:layout_weight="1"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:enabled="false"
+                    android:focusable="true"
+                    android:gravity="left|center_vertical"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:paddingTop="15dp"
+                    android:text="Select All"
+                    android:textColor="@color/selector_contact_select_text"
+                    android:textSize="16sp"
+                    android:visibility="visible"/>
+
+                <TextView
+                    android:id="@+id/tvSelect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="right"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:enabled="false"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingBottom="15dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:paddingTop="15dp"
+                    android:text="@string/tv_select_btn_text_disabled"
+                    android:textColor="@color/selector_contact_select_text"
+                    android:textSize="16sp"/>
+            </RelativeLayout>
+
         </LinearLayout>
 
     </RelativeLayout>
