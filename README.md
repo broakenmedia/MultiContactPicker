@@ -87,6 +87,15 @@ This can then be set in the builder above using **.theme(int)**
 ### Changelog
 
 ```
+1.7
+---
+- Contacts are now returned with their respective Contact ID
+- You can now open the picker in CHOICE_MODE_SINGLE or CHOICE_MODE_MULITPLE to select 1 or many contacts
+- Tweaked control panel text from Select->Finish
+- Added the ability to "Select-All" and "Un-Select All"
+- Updated dependencies
+- Switched from default Fragments to support.v4.Fragments 
+---
 1.6
 ---
 - Contacts are now shown asynchronously as they load
