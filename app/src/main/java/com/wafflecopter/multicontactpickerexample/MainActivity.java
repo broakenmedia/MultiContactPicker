@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
                             .theme(R.style.MyCustomPickerTheme) //Optional - default: MultiContactPicker.Azure
                             .hideScrollbar(false) //Optional - default: false
                             .showTrack(true) //Optional - default: true
-                            .searchIconColor(Color.WHITE) //Option - default: White
-                            .setChoiceMode(MultiContactPicker.CHOICE_MODE_MULTIPLE)
+                            .searchIconColor(Color.WHITE) //Optional - default: White
+                            .setChoiceMode(MultiContactPicker.CHOICE_MODE_MULTIPLE) //Optional - default: CHOICE_MODE_MULTIPLE
                             .handleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Azure Blue
                             .bubbleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Azure Blue
                             .bubbleTextColor(Color.WHITE) //Optional - default: White
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == CONTACT_PICKER_REQUEST){
             if(resultCode == RESULT_OK) {
                 List<ContactResult> results = MultiContactPicker.obtainResult(data);
-                Log.d("MyTag", results.get(0).getContactID());
+                Log.d("MyTag", results.get(0).getDisplayName());
             } else if(resultCode == RESULT_CANCELED){
                 System.out.println("User closed the picker without selecting items.");
             }

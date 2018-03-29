@@ -10,7 +10,7 @@ A simple, material design multi-contact picker using RecyclerView and Alphabetic
 
 Screenshot (Default Azure Theme)
 :-------------------------
-![](http://i.imgur.com/idrbwzL.png)
+![](https://i.imgur.com/4U7Fg8w.png)
 
 
 ## Install
@@ -28,7 +28,7 @@ Add this to your module build.gradle
 
 ``` gradle
 dependencies {
-    compile 'com.github.broakenmedia:MultiContactPicker:1.6'
+    compile 'com.github.broakenmedia:MultiContactPicker:1.7'
 }
 ```
 ### Usage
@@ -41,6 +41,7 @@ new MultiContactPicker.Builder(MainActivity.this) //Activity/fragment context
                             .hideScrollbar(false) //Optional - default: false
                             .showTrack(true) //Optional - default: true
                             .searchIconColor(Color.WHITE) //Option - default: White
+                            .setChoiceMode(MultiContactPicker.CHOICE_MODE_MULTIPLE) //Optional - default: CHOICE_MODE_MULTIPLE
                             .handleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Azure Blue
                             .bubbleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Azure Blue
                             .bubbleTextColor(Color.WHITE) //Optional - default: White
