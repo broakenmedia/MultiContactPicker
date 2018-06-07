@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/tv_no_contacts"
-                android:visibility="visible" />
+                android:visibility="gone" />
         </FrameLayout>
 
 
