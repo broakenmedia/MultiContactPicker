@@ -195,6 +195,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
 
                     @Override
                     public void onComplete() {
+                        progressBar.setVisibility(View.GONE);
                         tvSelectAll.setEnabled(true);
                     }
                 });
