@@ -5,4 +5,5 @@
     <string name="tv_select_btn_text_enabled">Finish(%1$s)</string>
     <string name="tv_select_all_btn_text">Select All</string>
     <string name="tv_unselect_all_btn_text">Un-select All</string>
+    <string name="tv_no_contacts">No contacts found</string>
 </resources>
