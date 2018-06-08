@@ -144,6 +144,20 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         }else{
             controlPanel.setVisibility(View.VISIBLE);
         }
+        
+        if (builder.titleText != null) {
+            setTitle(builder.titleText);
+        }
+        
+        
+        if (builder.completionText != null) {
+            tvSelectBtn.setText(builder.completionText);
+        }
+        
+        
+        if (builder.selectionText != null) {
+            tvSelectAll.setText(builder.selectionText);
+        }
     }
 
     @Override

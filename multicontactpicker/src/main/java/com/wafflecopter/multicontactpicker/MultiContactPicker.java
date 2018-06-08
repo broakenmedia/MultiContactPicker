@@ -32,7 +32,7 @@ public class MultiContactPicker {
         protected boolean hideScrollbar;
         protected boolean showTrack = true;
         protected int selectionMode = CHOICE_MODE_MULTIPLE;
-
+        protected String titleText, completionText, selectionText;
 
 
         public Builder(@NonNull Activity act) {
@@ -88,6 +88,21 @@ public class MultiContactPicker {
             return this;
         }
 
+        public Builder setTitleText(String titleText){
+            this.titleText = titleText;
+            return this;
+        }
+      
+        public Builder setCompletionText(String completionText){
+            this.completionText = completionText;
+            return this;
+        }
+        
+        public Builder setSelectionText(String selectionText){
+            this.selectionText = selectionText;
+            return this;
+        }
+        
         public void showPickerForResult(int requestCode) {
             if (acc != null) {
                 Intent intent = new Intent(acc, MultiContactPickerActivity.class);
