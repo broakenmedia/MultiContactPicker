@@ -18,6 +18,9 @@ public class MultiContactPicker {
     public static final int CHOICE_MODE_MULTIPLE = 0;
     public static final int CHOICE_MODE_SINGLE = 1;
 
+    public static final int LOAD_ASYNC = 0;
+    public static final int LOAD_SYNC = 1;
+
     public static class Builder implements Serializable {
 
         protected transient Activity acc;
@@ -28,12 +31,14 @@ public class MultiContactPicker {
         protected int bubbleTextColor;
         protected int handleColor;
         protected int trackColor;
+        protected LimitColumn columnLimit = LimitColumn.NONE;
         protected Integer searchIconColor;
         protected boolean hideScrollbar;
         protected boolean showTrack = true;
         protected int selectionMode = CHOICE_MODE_MULTIPLE;
-        protected String titleText, completionText, selectionText;
-
+        protected int loadingMode = LOAD_ASYNC;
+        protected ArrayList<Long> selectedItems = new ArrayList<>();
+        protected String titleText;
 
         public Builder(@NonNull Activity act) {
             this.acc = act;
@@ -88,20 +93,37 @@ public class MultiContactPicker {
             return this;
         }
 
+        public Builder setLoadingType(int loadingMode){
+            this.loadingMode = loadingMode;
+            return this;
+        }
+
         public Builder setTitleText(String titleText){
             this.titleText = titleText;
             return this;
         }
-      
-        public Builder setCompletionText(String completionText){
-            this.completionText = completionText;
+
+        public Builder limitToColumn(LimitColumn limitedColumn){
+            this.columnLimit = limitedColumn;
             return this;
         }
-        
-        public Builder setSelectionText(String selectionText){
-            this.selectionText = selectionText;
+
+        public Builder setSelectedContacts(String... selectedContactIDs){
+            this.selectedItems.clear();
+            for(String id : selectedContactIDs){
+                this.selectedItems.add(Long.parseLong(id));
+            }
             return this;
         }
+
+        public Builder setSelectedContacts(ArrayList<ContactResult> selectedContacts){
+            this.selectedItems.clear();
+            for(ContactResult result : selectedContacts){
+                this.selectedItems.add(Long.parseLong(result.getContactID()));
+            }
+            return this;
+        }
+
         
         public void showPickerForResult(int requestCode) {
             if (acc != null) {

@@ -13,13 +13,15 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.wafflecopter.multicontactpicker.ContactResult;
+import com.wafflecopter.multicontactpicker.LimitColumn;
 import com.wafflecopter.multicontactpicker.MultiContactPicker;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int CONTACT_PICKER_REQUEST = 991;
+    private ArrayList<ContactResult> results = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
                             .handleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Azure Blue
                             .bubbleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Azure Blue
                             .bubbleTextColor(Color.WHITE) //Optional - default: White
+                            .setTitleText("Select Contacts") //Optional - only use if required
+                            .setSelectedContacts(results) //Optional - will pre-select contacts of your choice. String... or List<ContactResult>
+                            .setLoadingType(MultiContactPicker.LOAD_ASYNC) //Optional - default LOAD_ASYNC (wait till all loaded vs stream results)
+                            .limitToColumn(LimitColumn.NONE) //Optional - default NONE (Include phone + email, limiting to one can improve loading time)
                             .showPickerForResult(CONTACT_PICKER_REQUEST);
                 }else{
                     Toast.makeText(MainActivity.this, "Remember to go into settings and enable the contacts permission.", Toast.LENGTH_LONG).show();
@@ -54,8 +60,10 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == CONTACT_PICKER_REQUEST){
             if(resultCode == RESULT_OK) {
-                List<ContactResult> results = MultiContactPicker.obtainResult(data);
-                Log.d("MyTag", results.get(0).getDisplayName());
+                results.addAll(MultiContactPicker.obtainResult(data));
+                if(results.size() > 0) {
+                    Log.d("MyTag", results.get(0).getDisplayName());
+                }
             } else if(resultCode == RESULT_CANCELED){
                 System.out.println("User closed the picker without selecting items.");
             }

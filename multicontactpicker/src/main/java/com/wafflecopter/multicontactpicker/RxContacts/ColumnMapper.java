@@ -47,7 +47,7 @@ class ColumnMapper {
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
             // Remove all whitespaces
             phoneNumber = phoneNumber.replaceAll("\\s+","");
-            contact.getPhoneNumbers().add(phoneNumber);
+            contact.getPhoneNumbers().add(phoneNumber.trim());
         }
     }
 

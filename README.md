@@ -28,7 +28,7 @@ Add this to your module build.gradle
 
 ``` gradle
 dependencies {
-    compile 'com.github.broakenmedia:MultiContactPicker:1.7'
+    compile 'com.github.broakenmedia:MultiContactPicker:1.8'
 }
 ```
 ### Usage
@@ -45,6 +45,9 @@ new MultiContactPicker.Builder(MainActivity.this) //Activity/fragment context
                             .handleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Azure Blue
                             .bubbleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Azure Blue
                             .bubbleTextColor(Color.WHITE) //Optional - default: White
+                            .setSelectedContacts("10", "5" / myList) //Optional - will pre-select contacts of your choice. String... or List<ContactResult>
+                            .setLoadingType(MultiContactPicker.LOAD_ASYNC) //Optional - default LOAD_ASYNC (wait till all loaded vs stream results)
+                            .limitToColumn(LimitColumn.NONE) //Optional - default NONE (Include phone + email, limiting to one can improve loading time)
                             .showPickerForResult(CONTACT_PICKER_REQUEST);
 ```
 
@@ -87,6 +90,20 @@ This can then be set in the builder above using **.theme(int)**
 ### Changelog
 
 ```
+1.8
+---
+- You can now limit results to contacts that have an EMAIL, PHONE or BOTH using .limitToColumn(). Limiting columns can reduce loading time
+- Now able to specify list loading type. Streaming the results to screen or wait and display all at once using .setLoadingType()
+- Added ability to specify a list of contacts that will be pre-selected when opening the picker (List of String or ArrayList of ContactResult)
+- Fixed memory leak
+- Updated dependencies
+- Performance improvements and general bug fixes
+- Included pull requests
+    - Hide progress when loading completes
+    - Added error message when no contacts found
+    - Added ability to set picker title
+- Updated sample app
+---
 1.7
 ---
 - Contacts are now returned with their respective Contact ID

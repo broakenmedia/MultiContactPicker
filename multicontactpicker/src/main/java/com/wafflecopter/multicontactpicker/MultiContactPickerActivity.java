@@ -26,7 +26,9 @@ import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
@@ -46,6 +48,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
     private MenuItem searchMenuItem;
     private MultiContactPicker.Builder builder;
     private boolean allSelected = false;
+    private CompositeDisposable disposables;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,8 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         if (intent == null) return;
 
         builder = (MultiContactPicker.Builder) intent.getSerializableExtra("builder");
+
+        disposables = new CompositeDisposable();
 
         setTheme(builder.theme);
 
@@ -81,14 +86,9 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         adapter = new MultiContactPickerAdapter(contactList, new MultiContactPickerAdapter.ContactSelectListener() {
             @Override
             public void onContactSelected(Contact contact, int totalSelectedContacts) {
-                tvSelectBtn.setEnabled(totalSelectedContacts > 0);
+                updateSelectBarContents(totalSelectedContacts);
                 if(builder.selectionMode == MultiContactPicker.CHOICE_MODE_SINGLE){
                     finishPicking();
-                }
-                if(totalSelectedContacts > 0) {
-                    tvSelectBtn.setText(getString(R.string.tv_select_btn_text_enabled, String.valueOf(totalSelectedContacts)));
-                } else {
-                    tvSelectBtn.setText(getString(R.string.tv_select_btn_text_disabled));
                 }
             }
         });
@@ -126,6 +126,15 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         finish();
     }
 
+    private void updateSelectBarContents(int totalSelectedContacts){
+        tvSelectBtn.setEnabled(totalSelectedContacts > 0);
+        if(totalSelectedContacts > 0) {
+            tvSelectBtn.setText(getString(R.string.tv_select_btn_text_enabled, String.valueOf(totalSelectedContacts)));
+        } else {
+            tvSelectBtn.setText(getString(R.string.tv_select_btn_text_disabled));
+        }
+    }
+
     private void initialiseUI(MultiContactPicker.Builder builder){
         setSupportActionBar(toolbar);
         searchView.setOnQueryTextListener(this);
@@ -144,20 +153,15 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         }else{
             controlPanel.setVisibility(View.VISIBLE);
         }
+
+        if(builder.selectionMode == MultiContactPicker.CHOICE_MODE_SINGLE && builder.selectedItems.size() > 0){
+            throw new RuntimeException("You must be using MultiContactPicker.CHOICE_MODE_MULTIPLE in order to use setSelectedContacts()");
+        }
         
         if (builder.titleText != null) {
             setTitle(builder.titleText);
         }
-        
-        
-        if (builder.completionText != null) {
-            tvSelectBtn.setText(builder.completionText);
-        }
-        
-        
-        if (builder.selectionText != null) {
-            tvSelectAll.setText(builder.selectionText);
-        }
+
     }
 
     @Override
@@ -174,9 +178,15 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
     private void loadContacts(){
         tvSelectAll.setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
-        RxContacts.fetch(this)
+        RxContacts.fetch(builder.columnLimit, this)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(new Consumer<Disposable>() {
+                    @Override
+                    public void accept(Disposable disposable) throws Exception {
+                        disposables.add(disposable);
+                    }
+                })
                 .filter(new Predicate<Contact>() {
                     @Override
                     public boolean test(Contact contact) throws Exception {
@@ -191,16 +201,21 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
                     @Override
                     public void onNext(Contact value) {
                         contactList.add(value);
+                        if(builder.selectedItems.contains(value.getId())){
+                            adapter.setContactSelected(value.getId());
+                        }
                         Collections.sort(contactList, new Comparator<Contact>() {
                             @Override
                             public int compare(Contact contact, Contact t1) {
                                 return contact.getDisplayName().compareToIgnoreCase(t1.getDisplayName());
                             }
                         });
-                        if(adapter != null){
-                            adapter.notifyDataSetChanged();
+                        if(builder.loadingMode == MultiContactPicker.LOAD_ASYNC) {
+                            if (adapter != null) {
+                                adapter.notifyDataSetChanged();
+                            }
+                            progressBar.setVisibility(View.GONE);
                         }
-                        progressBar.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -212,6 +227,12 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
                     @Override
                     public void onComplete() {
                         if (contactList.size() == 0) { tvNoContacts.setVisibility(View.VISIBLE); }
+                        if (adapter != null && builder.loadingMode == MultiContactPicker.LOAD_SYNC) {
+                            adapter.notifyDataSetChanged();
+                        }
+                        if(adapter != null) {
+                            updateSelectBarContents(adapter.getSelectedContactsCount());
+                        }
                         progressBar.setVisibility(View.GONE);
                         tvSelectAll.setEnabled(true);
                     }
@@ -264,5 +285,11 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        disposables.clear();
+        super.onDestroy();
     }
 }
