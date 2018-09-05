@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:mcpapp="http://schemas.android.com/apk/com.l4digital.fastscroll"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
@@ -44,11 +45,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="visible"
-                app:bubbleColor="@color/azureColorPrimaryDark"
-                app:bubbleTextColor="#ffffff"
-                app:handleColor="@color/azureColorPrimaryDark"
-                app:hideScrollbar="false"
-                app:showTrack="false"
+                mcpapp:bubbleColor="@color/azureColorPrimaryDark"
+                mcpapp:bubbleTextColor="#ffffff"
+                mcpapp:handleColor="@color/azureColorPrimaryDark"
+                mcpapp:hideScrollbar="false"
+                mcpapp:showTrack="false"
                 tools:layout_editor_absoluteX="8dp"
                 tools:layout_editor_absoluteY="8dp"/>
 
