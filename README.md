@@ -45,6 +45,7 @@ new MultiContactPicker.Builder(MainActivity.this) //Activity/fragment context
                             .handleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Azure Blue
                             .bubbleColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimary)) //Optional - default: Azure Blue
                             .bubbleTextColor(Color.WHITE) //Optional - default: White
+                            .setTitleText("Select Contacts") //Optional - default: Select Contacts
                             .setSelectedContacts("10", "5" / myList) //Optional - will pre-select contacts of your choice. String... or List<ContactResult>
                             .setLoadingType(MultiContactPicker.LOAD_ASYNC) //Optional - default LOAD_ASYNC (wait till all loaded vs stream results)
                             .limitToColumn(LimitColumn.NONE) //Optional - default NONE (Include phone + email, limiting to one can improve loading time)
