@@ -58,7 +58,8 @@ public class RxContacts {
     private static final String[] NUMBER_PROJECTION = {
             ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
             ContactsContract.CommonDataKinds.Phone.NUMBER,
-            ContactsContract.CommonDataKinds.Phone.TYPE
+            ContactsContract.CommonDataKinds.Phone.TYPE,
+            ContactsContract.CommonDataKinds.Phone.LABEL
     };
 
 
@@ -158,8 +159,9 @@ public class RxContacts {
                 phoneCursor.moveToFirst();
                 int phoneNumberColumnIndex = phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                 int phoneNumberTypeIndex = phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE);
+                int labelColIndex = phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LABEL);
                 while (!phoneCursor.isAfterLast()) {
-                    ColumnMapper.mapPhoneNumber(mContext, phoneCursor, contact, phoneNumberColumnIndex, phoneNumberTypeIndex);
+                    ColumnMapper.mapPhoneNumber(mContext, phoneCursor, contact, phoneNumberColumnIndex, phoneNumberTypeIndex, labelColIndex);
                     phoneCursor.moveToNext();
                 }
                 phoneCursor.close();

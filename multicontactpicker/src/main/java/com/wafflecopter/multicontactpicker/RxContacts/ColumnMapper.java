@@ -44,10 +44,10 @@ class ColumnMapper {
         }
     }
 
-    static void mapPhoneNumber (Context con, Cursor cursor, Contact contact, int noColumnIndex, int typeColIndex) {
+    static void mapPhoneNumber (Context con, Cursor cursor, Contact contact, int noColumnIndex, int typeColIndex, int labelColIndex) {
         String phoneNumber = cursor.getString(noColumnIndex);
         int phonetype = cursor.getInt(typeColIndex);
-        String customLabel = cursor.getString(typeColIndex);
+        String customLabel = cursor.getString(labelColIndex);
         String phoneLabel = (String) ContactsContract.CommonDataKinds.Phone.getTypeLabel(con.getResources(), phonetype, customLabel);
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
             // Remove all whitespaces
