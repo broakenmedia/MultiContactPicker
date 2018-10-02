@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.wafflecopter.multicontactpicker.RxContacts.Contact;
+import com.wafflecopter.multicontactpicker.RxContacts.PhoneNumber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class ContactResult implements Parcelable {
     private Uri mPhoto;
     private Uri mThumbnail;
     private List<String> mEmails = new ArrayList<>();
-    private List<String> mPhoneNumbers = new ArrayList<>();
+    private List<PhoneNumber> mPhoneNumbers = new ArrayList<>();
 
     public String getContactID() {
         return mContactID;
@@ -48,7 +49,7 @@ public class ContactResult implements Parcelable {
         return mEmails;
     }
 
-    public List<String> getPhoneNumbers() {
+    public List<PhoneNumber> getPhoneNumbers() {
         return mPhoneNumbers;
     }
 
@@ -69,7 +70,7 @@ public class ContactResult implements Parcelable {
         this.mPhoto = in.readParcelable(Uri.class.getClassLoader());
         this.mThumbnail = in.readParcelable(Uri.class.getClassLoader());
         this.mEmails = in.createStringArrayList();
-        this.mPhoneNumbers = in.createStringArrayList();
+        in.readTypedList(this.mPhoneNumbers, PhoneNumber.CREATOR);
     }
 
     @Override
@@ -85,7 +86,7 @@ public class ContactResult implements Parcelable {
         dest.writeParcelable(this.mPhoto, flags);
         dest.writeParcelable(this.mThumbnail, flags);
         dest.writeStringList(this.mEmails);
-        dest.writeStringList(this.mPhoneNumbers);
+        dest.writeTypedList(this.mPhoneNumbers);
     }
 
     @SuppressWarnings("unused")

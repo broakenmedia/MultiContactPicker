@@ -49,6 +49,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
     private MultiContactPicker.Builder builder;
     private boolean allSelected = false;
     private CompositeDisposable disposables;
+    private Integer animationCloseEnter, animationCloseExit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +125,13 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         result.putExtra(EXTRA_RESULT_SELECTION, MultiContactPicker.buildResult(adapter.getSelectedContacts()));
         setResult(RESULT_OK, result);
         finish();
+        overrideAnimation();
+    }
+
+    private void overrideAnimation(){
+        if(animationCloseEnter != null && animationCloseExit != null){
+            overridePendingTransition(animationCloseEnter, animationCloseExit);
+        }
     }
 
     private void updateSelectBarContents(int totalSelectedContacts){
@@ -138,6 +146,10 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
     private void initialiseUI(MultiContactPicker.Builder builder){
         setSupportActionBar(toolbar);
         searchView.setOnQueryTextListener(this);
+
+        this.animationCloseEnter = builder.animationCloseEnter;
+        this.animationCloseExit = builder.animationCloseExit;
+
         if(builder.bubbleColor != 0)
             recyclerView.setBubbleColor(builder.bubbleColor);
         if(builder.handleColor != 0)
@@ -164,12 +176,15 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
 
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
                 setResult(RESULT_CANCELED);
                 finish();
+                overrideAnimation();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -284,6 +299,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
             searchView.closeSearch();
         } else {
             super.onBackPressed();
+            overrideAnimation();
         }
     }
 

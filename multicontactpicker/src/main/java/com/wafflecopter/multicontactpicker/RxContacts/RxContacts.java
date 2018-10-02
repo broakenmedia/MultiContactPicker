@@ -57,13 +57,15 @@ public class RxContacts {
 
     private static final String[] NUMBER_PROJECTION = {
             ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
-            ContactsContract.CommonDataKinds.Phone.NUMBER
+            ContactsContract.CommonDataKinds.Phone.NUMBER,
+            ContactsContract.CommonDataKinds.Phone.TYPE
     };
 
 
 
 
     private ContentResolver mResolver;
+    private Context mContext;
 
     public static Observable<Contact> fetch (@NonNull final LimitColumn columnLimitChoice, @NonNull final Context context) {
         return Observable.create(new ObservableOnSubscribe<Contact>() {
@@ -75,6 +77,7 @@ public class RxContacts {
     }
 
     private RxContacts(@NonNull Context context) {
+        mContext = context;
         mResolver = context.getContentResolver();
     }
 
@@ -154,8 +157,9 @@ public class RxContacts {
             if (phoneCursor != null) {
                 phoneCursor.moveToFirst();
                 int phoneNumberColumnIndex = phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                int phoneNumberTypeIndex = phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE);
                 while (!phoneCursor.isAfterLast()) {
-                    ColumnMapper.mapPhoneNumber(phoneCursor, contact, phoneNumberColumnIndex);
+                    ColumnMapper.mapPhoneNumber(mContext, phoneCursor, contact, phoneNumberColumnIndex, phoneNumberTypeIndex);
                     phoneCursor.moveToNext();
                 }
                 phoneCursor.close();

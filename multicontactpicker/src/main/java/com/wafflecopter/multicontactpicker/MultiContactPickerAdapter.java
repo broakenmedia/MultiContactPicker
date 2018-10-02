@@ -55,7 +55,7 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             contactViewHolder.vRoundLetterView.setBackgroundColor(contactItem.getBackgroundColor());
 
             if (contactItem.getPhoneNumbers().size() > 0) {
-                String phoneNumber = contactItem.getPhoneNumbers().get(0).replaceAll("\\s+", "");
+                String phoneNumber = contactItem.getPhoneNumbers().get(0).getNumber().replaceAll("\\s+", "");
                 String displayName = contactItem.getDisplayName().replaceAll("\\s+", "");
                 if (!phoneNumber.equals(displayName)) {
                     contactViewHolder.tvNumber.setVisibility(View.VISIBLE);

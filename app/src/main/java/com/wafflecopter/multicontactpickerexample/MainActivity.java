@@ -47,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
                             .setSelectedContacts(results) //Optional - will pre-select contacts of your choice. String... or List<ContactResult>
                             .setLoadingType(MultiContactPicker.LOAD_ASYNC) //Optional - default LOAD_ASYNC (wait till all loaded vs stream results)
                             .limitToColumn(LimitColumn.NONE) //Optional - default NONE (Include phone + email, limiting to one can improve loading time)
+                            .setActivityAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                                    android.R.anim.fade_in,
+                                    android.R.anim.fade_out) //Optional - default: No animation overrides
                             .showPickerForResult(CONTACT_PICKER_REQUEST);
                 }else{
                     Toast.makeText(MainActivity.this, "Remember to go into settings and enable the contacts permission.", Toast.LENGTH_LONG).show();

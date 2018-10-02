@@ -16,7 +16,7 @@ public class Contact implements Comparable<Contact> {
     private Uri mPhoto;
     private Uri mThumbnail;
     private List<String> mEmails = new ArrayList<>();
-    private List<String> mPhoneNumbers = new ArrayList<>();
+    private List<PhoneNumber> mPhoneNumbers = new ArrayList<>();
     private boolean isSelected;
     private int backgroundColor = Color.BLUE;
 
@@ -77,11 +77,11 @@ public class Contact implements Comparable<Contact> {
         mEmails = emails;
     }
 
-    public List<String> getPhoneNumbers() {
+    public List<PhoneNumber> getPhoneNumbers() {
         return mPhoneNumbers;
     }
 
-    public void setPhoneNumbers(List<String> phoneNumbers) {
+    public void setPhoneNumbers(List<PhoneNumber> phoneNumbers) {
         mPhoneNumbers = phoneNumbers;
     }
 
