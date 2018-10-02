@@ -28,7 +28,7 @@ Add this to your module build.gradle
 
 ``` gradle
 dependencies {
-    implementation 'com.github.broakenmedia:MultiContactPicker:1.8.3'
+    implementation 'com.github.broakenmedia:MultiContactPicker:1.8.4'
 }
 ```
 ### Usage
@@ -49,6 +49,9 @@ new MultiContactPicker.Builder(MainActivity.this) //Activity/fragment context
                             .setSelectedContacts("10", "5" / myList) //Optional - will pre-select contacts of your choice. String... or List<ContactResult>
                             .setLoadingType(MultiContactPicker.LOAD_ASYNC) //Optional - default LOAD_ASYNC (wait till all loaded vs stream results)
                             .limitToColumn(LimitColumn.NONE) //Optional - default NONE (Include phone + email, limiting to one can improve loading time)
+                            .setActivityAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                                    android.R.anim.fade_in,
+                                    android.R.anim.fade_out) //Optional - default: No animation overrides
                             .showPickerForResult(CONTACT_PICKER_REQUEST);
 ```
 
@@ -91,6 +94,13 @@ This can then be set in the builder above using **.theme(int)**
 ### Changelog
 
 ```
+1.8.4
+---
+- Activity enter and exit animations can now be set via setActivityAnimations
+- Phone numbers are no longer returned as a list of strings. Instead as a PhoneNumber object which includes both the number and number type e.g. "Mobile"
+- Updated dependencies
+- Updated sample app
+---
 1.8
 ---
 - You can now limit results to contacts that have an EMAIL, PHONE or BOTH using .limitToColumn(). Limiting columns can reduce loading time
