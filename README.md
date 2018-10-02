@@ -28,7 +28,7 @@ Add this to your module build.gradle
 
 ``` gradle
 dependencies {
-    implementation 'com.github.broakenmedia:MultiContactPicker:1.8.4'
+    implementation 'com.github.broakenmedia:MultiContactPicker:1.8.5'
 }
 ```
 ### Usage
