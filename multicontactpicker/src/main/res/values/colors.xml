@@ -5,4 +5,6 @@
     <color name="azureColorPrimaryDark">#008EF8</color>
     <color name="azureColorPrimary">#009BFA</color>
     <color name="azureColorAccent">#FFFFFF</color>
+    <color name="selector_contact_select_text_enabled">#2586DD</color>
+    <color name="selector_contact_select_text_default">#B2D6F4</color>
 </resources>
