@@ -86,7 +86,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
-        adapter = new MultiContactPickerAdapter(contactList, new MultiContactPickerAdapter.ContactSelectListener() {
+        adapter = new MultiContactPickerAdapter(builder.selectionLimit, contactList, new MultiContactPickerAdapter.ContactSelectListener() {
             @Override
             public void onContactSelected(Contact contact, int totalSelectedContacts) {
                 updateSelectBarContents(totalSelectedContacts);
