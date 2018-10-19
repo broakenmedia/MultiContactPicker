@@ -29,15 +29,17 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private List<Contact> contactItemListOriginal;
     private ContactSelectListener listener;
     private String currentFilterQuery;
+    int selectionLimit;
 
     interface ContactSelectListener{
         void onContactSelected(Contact contact, int totalSelectedContacts);
     }
 
-    MultiContactPickerAdapter(List<Contact> contactItemList, ContactSelectListener listener) {
+    MultiContactPickerAdapter(int selectionLimit, List<Contact> contactItemList, ContactSelectListener listener) {
         this.contactItemList = contactItemList;
         this.contactItemListOriginal = contactItemList;
         this.listener = listener;
+        this.selectionLimit = selectionLimit;
     }
 
     @Override
