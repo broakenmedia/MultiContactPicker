@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_enabled="true"
-          android:color="#2586DD"/> <!-- enabled -->
-    <item android:color="#B2D6F4"/> <!-- default -->
+          android:color="@color/selector_contact_select_text_enabled"/> <!-- enabled -->
+    <item android:color="@color/selector_contact_select_text_default"/> <!-- default -->
 </selector>

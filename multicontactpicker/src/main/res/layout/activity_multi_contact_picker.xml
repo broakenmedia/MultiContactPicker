@@ -109,7 +109,7 @@
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
                     android:paddingTop="15dp"
-                    android:text="Select All"
+                    android:text="@string/tv_select_all_btn_text"
                     android:textColor="@color/selector_contact_select_text"
                     android:textSize="16sp"
                     android:visibility="visible"/>
