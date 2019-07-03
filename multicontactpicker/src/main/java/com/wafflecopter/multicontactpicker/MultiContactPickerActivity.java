@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.l4digital.fastscroll.FastScrollRecyclerView;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
@@ -50,6 +51,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
     private boolean allSelected = false;
     private CompositeDisposable disposables;
     private Integer animationCloseEnter, animationCloseExit;
+    private boolean isSelectAllEnabled = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +86,7 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
-        adapter = new MultiContactPickerAdapter(contactList, new MultiContactPickerAdapter.ContactSelectListener() {
+        adapter = new MultiContactPickerAdapter(builder.selectionLimit, contactList, new MultiContactPickerAdapter.ContactSelectListener() {
             @Override
             public void onContactSelected(Contact contact, int totalSelectedContacts) {
                 updateSelectBarContents(totalSelectedContacts);
@@ -108,13 +110,19 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         tvSelectAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                allSelected = !allSelected;
-                if(adapter != null)
-                    adapter.setAllSelected(allSelected);
-                if(allSelected)
-                    tvSelectAll.setText(getString(R.string.tv_unselect_all_btn_text));
-                else
-                    tvSelectAll.setText(getString(R.string.tv_select_all_btn_text));
+
+                if (isSelectAllEnabled) {
+                    allSelected = !allSelected;
+                    if (adapter != null)
+                        adapter.setAllSelected(allSelected);
+                    if (allSelected)
+                        tvSelectAll.setText(getString(R.string.tv_unselect_all_btn_text));
+                    else
+                        tvSelectAll.setText(getString(R.string.tv_select_all_btn_text));
+                } else {
+                    Toast.makeText(MultiContactPickerActivity.this, "Feature is disabled as selection limit is " + builder.selectionLimit + " contacts", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -172,6 +180,12 @@ public class MultiContactPickerActivity extends AppCompatActivity implements Mat
         
         if (builder.titleText != null) {
             setTitle(builder.titleText);
+        }
+        
+        if (builder.selectionLimit != MultiContactPicker.MAX_SELECTION_LIMIT) {
+
+            tvSelectAll.setEnabled(false);
+            isSelectAllEnabled = false;
         }
 
     }

@@ -18,6 +18,7 @@ public class MultiContactPicker {
 
     public static final int CHOICE_MODE_MULTIPLE = 0;
     public static final int CHOICE_MODE_SINGLE = 1;
+    public static final int MAX_SELECTION_LIMIT = 25000;
 
     public static final int LOAD_ASYNC = 0;
     public static final int LOAD_SYNC = 1;
@@ -38,6 +39,7 @@ public class MultiContactPicker {
         protected boolean hideScrollbar;
         protected boolean showTrack = true;
         protected int selectionMode = CHOICE_MODE_MULTIPLE;
+        protected int selectionLimit = MAX_SELECTION_LIMIT;
         protected int loadingMode = LOAD_ASYNC;
         protected ArrayList<Long> selectedItems = new ArrayList<>();
         protected String titleText;
@@ -92,6 +94,11 @@ public class MultiContactPicker {
 
         public Builder setChoiceMode(int selectionMode){
             this.selectionMode = selectionMode;
+            return this;
+        }
+        
+        public Builder setSelectionLimit(int selectionLimit) {
+            this.selectionLimit = selectionLimit;
             return this;
         }
 
