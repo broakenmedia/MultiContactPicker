@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">MultiContactPicker</string>
-    <string name="picker_title">Select Contacts</string>
-    <string name="tv_select_btn_text_disabled">Select</string>
-    <string name="tv_select_btn_text_enabled">Select(%1$s)</string>
-</resources>

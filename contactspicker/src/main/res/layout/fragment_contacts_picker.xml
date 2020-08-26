@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".pickerfragment.ContactsPickerFragment">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:theme="@style/ThemeOverlay.Toolbar"
+                app:menu="@menu/picker_menu"
+                app:navigationIcon="@drawable/arrow_left"
+                app:title="@string/picker_title" />
+
+            <com.google.android.material.progressindicator.ProgressIndicator
+                android:id="@+id/progressBar"
+                style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Determinate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:indicatorColor="?attr/colorSecondary"
+                app:trackColor="?attr/colorSecondaryVariant" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.l4digital.fastscroll.FastScrollRecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="visible"
+            app:bubbleColor="?attr/colorSecondaryVariant"
+            app:bubbleTextColor="#ffffff"
+            app:handleColor="?attr/colorSecondaryVariant"
+            app:hideScrollbar="false"
+            app:layout_constraintBottom_toTopOf="@+id/controlPanel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+            app:layout_constraintVertical_bias="0.0"
+            app:showTrack="false" />
+
+        <TextView
+            android:id="@+id/tvNoContacts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/tv_no_contacts"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
+            app:layout_constraintEnd_toEndOf="@+id/recyclerView"
+            app:layout_constraintStart_toStartOf="@+id/recyclerView"
+            app:layout_constraintTop_toTopOf="@+id/recyclerView" />
+
+        <FrameLayout
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:id="@+id/frameLayoutDivider1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/bg_divider"
+            app:layout_constraintBottom_toBottomOf="@+id/recyclerView" />
+
+        <LinearLayout
+            android:id="@+id/controlPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tvSelectAll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:enabled="false"
+                android:focusable="true"
+                android:gravity="start|center_vertical"
+                android:paddingLeft="20dp"
+                android:paddingTop="15dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="15dp"
+                android:text="@string/tv_select_all_btn_text"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                app:cornerRadius="0dp"
+                android:layout_margin="0dp"/>
+
+            <FrameLayout
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:id="@+id/frameLayoutDivider2"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_divider" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tvSelect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="end"
+                android:clickable="true"
+                android:enabled="false"
+                android:focusable="true"
+                android:gravity="end"
+                android:paddingLeft="20dp"
+                android:paddingTop="15dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="15dp"
+                android:text="@string/tv_select_btn_text_disabled"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                app:cornerRadius="0dp"
+                android:layout_margin="0dp"
+                />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

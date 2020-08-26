@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.wafflecopter.sampleapp.MainFragment" >
+
+    <Button
+        android:id="@+id/startMulti"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start multiple contacts picker"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/startSingle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start single contact picker"
+        app:layout_constraintBottom_toTopOf="@+id/startMulti"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/startSyncLoad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start sync load mode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startMulti" />
+
+    <Button
+        android:id="@+id/startNoScrollbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start no scrollbar mode"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startSyncLoad" />
+
+    <Button
+        android:id="@+id/startCustomText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start with custom text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startNoScrollbar" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

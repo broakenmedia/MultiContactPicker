@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Contacts Picker Sample App</string>
+    <string name="pick_all">Pick\'m all</string>
+    <string name="finish">Done</string>
+    <string name="finish_nr">Done (%1$s)</string>
+    <string name="reset">Reset</string>
+    <string name="nothing_found">Nothing found</string>
+</resources>

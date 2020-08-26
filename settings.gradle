@@ -1,1 +1,3 @@
-include ':app', ':multicontactpicker'
+include ':contactspicker'
+include ':app'
+rootProject.name = "ContactsPicker"

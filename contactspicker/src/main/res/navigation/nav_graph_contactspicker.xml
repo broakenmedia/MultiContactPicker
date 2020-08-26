@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph">
+
+    <fragment
+        android:id="@+id/contactsPickerFragment"
+        android:name="com.wafflecopter.contactspicker.pickerfragment.ContactsPickerFragment"
+        android:label="ContactsPickerFragment" >
+        <argument
+            android:name="columnLimit"
+            app:argType="com.wafflecopter.contactspicker.LimitColumn"
+            android:defaultValue="NONE" />
+        <argument
+            android:name="hideScrollbar"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="showTrack"
+            app:argType="boolean"
+            android:defaultValue="true" />
+        <argument
+            android:name="selectionMode"
+            app:argType="com.wafflecopter.contactspicker.ChoiceMode"
+            android:defaultValue="CHOICE_MODE_MULTIPLE" />
+        <argument
+            android:name="selectedItems"
+            app:argType="long[]" />
+        <argument
+            android:name="loadingMode"
+            app:argType="com.wafflecopter.contactspicker.LoadMode"
+            android:defaultValue="LOAD_ASYNC" />
+        <argument
+            android:name="title"
+            app:argType="reference"
+            android:defaultValue="@string/picker_title" />
+        <argument
+            android:name="animationOpenEnter"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="permissionExplanation"
+            app:argType="reference"
+            android:defaultValue="@string/permission_explanation" />
+        <argument
+            android:name="noContactsText"
+            app:argType="reference"
+            android:defaultValue="@string/tv_no_contacts" />
+        <argument
+            android:name="unselectAllText"
+            app:argType="reference"
+            android:defaultValue="@string/tv_unselect_all_btn_text" />
+        <argument
+            android:name="selectAllText"
+            app:argType="reference"
+            android:defaultValue="@string/tv_select_all_btn_text" />
+        <argument
+            android:name="selectTextEnabled"
+            app:argType="reference"
+            android:defaultValue="@string/tv_select_btn_text_enabled" />
+        <argument
+            android:name="selectTextDisabled"
+            app:argType="reference"
+            android:defaultValue="@string/tv_select_btn_text_disabled" />
+    </fragment>
+</navigation>
