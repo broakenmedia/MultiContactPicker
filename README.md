@@ -1,5 +1,5 @@
-##THIS PROJECT IS CURRENTLY UNMAINTAINED
-###If you wish to help maintain this project please submit an issue and tag me.
+## THIS PROJECT IS CURRENTLY UNMAINTAINED
+### If you wish to help maintain this project please submit an issue and tag me.
 
 # MultiContactPicker
 
