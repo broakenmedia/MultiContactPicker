@@ -1,6 +1,8 @@
 ## THIS PROJECT IS CURRENTLY UNMAINTAINED
 ### If you wish to help maintain this project please submit an issue and tag me.
 
+### Equally, if you wish to become a maintainer on this project. Let me know
+
 # MultiContactPicker
 
 [![](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
