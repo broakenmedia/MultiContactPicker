@@ -14,6 +14,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.l4digital.fastscroll.FastScroller;
 import com.wafflecopter.multicontactpicker.RxContacts.Contact;
@@ -28,15 +29,17 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private List<Contact> contactItemListOriginal;
     private ContactSelectListener listener;
     private String currentFilterQuery;
+    int selectionLimit;
 
     interface ContactSelectListener{
         void onContactSelected(Contact contact, int totalSelectedContacts);
     }
 
-    MultiContactPickerAdapter(List<Contact> contactItemList, ContactSelectListener listener) {
+    MultiContactPickerAdapter(int selectionLimit, List<Contact> contactItemList, ContactSelectListener listener) {
         this.contactItemList = contactItemList;
         this.contactItemListOriginal = contactItemList;
         this.listener = listener;
+        this.selectionLimit = selectionLimit;
     }
 
     @Override
@@ -89,10 +92,28 @@ class MultiContactPickerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             contactViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    setContactSelected(contactItem.getId());
-                    if (listener != null) {
-                        listener.onContactSelected(getItem(i), getSelectedContactsCount());
+
+                    int selectedCount = getSelectedContactsCount();
+                    if (contactItem.isSelected()) {
+                        setContactSelected(contactItem.getId());
+                        if (listener != null) {
+                            listener.onContactSelected(getItem(i), getSelectedContactsCount());
+                        }
+
+                    } else {
+
+                        if (selectedCount < selectionLimit) {
+                            setContactSelected(contactItem.getId());
+                            if (listener != null) {
+                                listener.onContactSelected(getItem(i), getSelectedContactsCount());
+                            }
+
+                        } else {
+
+                            Toast.makeText(view.getContext(), "Please select up to " + selectionLimit + " contacts only!", Toast.LENGTH_SHORT).show();
+                        }
                     }
+
                     notifyDataSetChanged();
                 }
             });
